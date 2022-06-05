@@ -5,6 +5,9 @@ const userRouter = require("./api/users/user.router");
 
 
 app.use(express.json());
-
+app.get("/",(req,res)=>{
+    console.log("HELLO")
+    res.send("HELLO WORLD+++++++++++")
+})
 app.use("/api/users",userRouter);
 app.listen();
