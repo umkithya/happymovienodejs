@@ -65,4 +65,16 @@ deleteUserByID:(userID,callBack) =>{
        }
     );
 },
+getUserByUserName:(username,callBack) =>{
+    pool.query(
+        'SELECT * FROM tbuser WHERE username=?',
+        [username],
+       (error,result ,fields)=>{
+           if(error){
+              return callBack(error);
+           }
+           return callBack(null,result[0]);
+       }
+    );
+},
 };

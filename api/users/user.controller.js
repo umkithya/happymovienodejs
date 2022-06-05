@@ -1,6 +1,8 @@
 const res = require("express/lib/response");
-const {create,getUserByID,getUsers,deleteUserByID,updateUser} = require("./user.service");
-const {genSaltSync,hashSync}=require("bcrypt");
+const {create,getUserByID,getUsers,deleteUserByID,updateUser,getUserByUserName} = require("./user.service");
+const {genSaltSync,hashSync,compareSync}=require("bcrypt");
+
+const {sign}=require("jsonwebtoken");
 module.exports={
     createUser:(req,res)=>{
         const body=req.body;
@@ -80,6 +82,39 @@ data: results
                 success:1,
                 message: 'delete successfully'
             });
+        });
+    },
+    login:(req,res)=>{
+        const body=req.body;
+
+        getUserByUserName(body.username,(err,results)=>{
+            if(err){
+                console.log(err);
+               return ;
+            }
+            if(!results){
+                return res.json({
+                    success:0,
+                    message: 'Invalid email or password'
+                });
+            }
+            
+            const result=compareSync(body.password,results.password);
+            if(result){
+                result.password=undefined;
+                const jsontoken=sign({result:results},"qwe1234");
+                return res.json({
+                    success:1,
+                    message: 'login successfully',
+                    token:jsontoken,
+                });
+            }else{
+                return res.json({
+                    success:0,
+                    data: 'Invalid email or password',
+                });
+            }
+            
         });
     },
     
