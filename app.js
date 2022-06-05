@@ -10,4 +10,11 @@ app.get("/",(req,res)=>{
     res.send("HELLO WORLD+++++++++++")
 })
 // app.use("/api/users",userRouter);
-app.listen();
+app.listen(process.env.PORT || 5000,()=>{
+    
+    console.log("Server is up and listening on:"+process.env.PORT)
+    
+    })
+    
+    
+
