@@ -9,5 +9,5 @@ app.get("/",(req,res)=>{
     console.log("HELLO")
     res.send("HELLO WORLD+++++++++++")
 })
-app.use("/api/users",userRouter);
+// app.use("/api/users",userRouter);
 app.listen();
