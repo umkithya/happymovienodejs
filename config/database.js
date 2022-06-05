@@ -1,9 +1,9 @@
 const {createPool} =require("mysql");
 const pool = createPool({
     port: 3306,
-    host: "36.37.185.92",
-    user: "umkit_happymovie",
-    password: "Kithya123@",
+    host: "process.env.DB_HOST",
+    user: "process.env.DB_USER",
+    password: "process.env.DB_PASS",
     database: process.env.MYSQL_DB,
     connectionLimit: 10
 });
