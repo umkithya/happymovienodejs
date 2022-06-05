@@ -1,10 +1,9 @@
 const {createPool} =require("mysql");
 const pool = createPool({
-    port: 3306,
-    host: "process.env.DB_HOST",
-    user: "process.env.DB_USER",
-    password: "process.env.DB_PASS",
-    database: process.env.MYSQL_DB,
+    host: "us-cdbr-east-05.cleardb.net",
+    user: "b26e6d391a74a0",
+    password: "94496ae7",
+    database: "heroku_99e3cab4ce08f19",
     connectionLimit: 10
 });
 module.exports=pool;
