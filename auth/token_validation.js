@@ -1,4 +1,4 @@
-const jwt = require("jsonwebtoken");
+const {verify} = require("jsonwebtoken");
 
 module.exports = {
   checkToken: (req, res, next) => {
@@ -7,11 +7,12 @@ module.exports = {
     if (token) {
       // Remove Bearer from string
       token = token.slice(7);
-      jwt.verify(token, process.env.JWT_KEY, (err, decoded) => {
+      verify(token, process.env.JWT_KEY, (err, decoded) => {
         if (err) {
           return res.json({
             success: 0,
-            message: "Invalid Token...$token"
+            message: "Invalid Token...",
+            token: token
           });
         } else {
           req.decoded = decoded;
