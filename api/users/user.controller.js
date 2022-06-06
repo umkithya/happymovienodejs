@@ -1,8 +1,9 @@
 const res = require("express/lib/response");
-const {create,getUserByID,getUsers,deleteUserByID,updateUser,getUserByUserName} = require("./user.service");
+const {create,getUserByID,getUsers,deleteUserByID,updateUser,getUserByUserName,createOtp,verifyOTP} = require("./user.service");
 const {genSaltSync,hashSync,compareSync}=require("bcrypt");
 
 const {sign}=require("jsonwebtoken");
+const {userService} = require("./user.service");
 module.exports={
     createUser:(req,res)=>{
         const body=req.body;
@@ -117,5 +118,28 @@ data: results
             
         });
     },
+    otpSignUp:(req,res,next)=>{
+        createOtp(req.body,(err,results)=>{
+            if(err){
+                return next(err);
+            }
+            return res.status(200).send({
+             message: "Success",
+             data: results
+            });
+        });
+    },
+    verifyOTP:(req,res,next)=>{
+        verifyOTP(req.body,(err,results)=>{
+            if(err){
+                return next(err);
+            }
+            return res.status(200).send({
+             message: "Success",
+             data: results
+            });
+        });
+    }
+    
     
 }
