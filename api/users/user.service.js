@@ -79,7 +79,7 @@ getUserByUserName:(username,callBack) =>{
        }
     );
 },
-createOtp:(params,callBack)=>{
+createOtp:(_params,callBack)=>{
     const otp=otpGenerator.generate(4,{
         alphabets:false,
         upperCase: false,
@@ -88,7 +88,7 @@ createOtp:(params,callBack)=>{
 
     const ttl=2*60*1000;
     const expires=Date.now()+ttl;
-    const data= '${params.phone}.${otp}.${expires}';
+    const data= '${_params.phone}.${otp}.${expires}';
     const hash= crypto.createHmac("sha256",key).update(data).digest("hex");
     const fullHash='${hash}.${expires}';
     console.log('Your OTP is ${otp}');
