@@ -1,9 +1,9 @@
 const {createPool} =require("mysql");
 const pool = createPool({
-    host: "sql101.epizy.com",
-    user: "epiz_31891119",
-    password: "a123456Kk",
-    database: "epiz_31891119_happymovie",
+    host: "sql.freedb.tech",
+    user: "freedb_freedbumkithya",
+    password: "@&53nUZ2%hZMZZj",
+    database: "freedb_happymovie",
     connectionLimit: 10
 });
 module.exports=pool;
