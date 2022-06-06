@@ -88,9 +88,9 @@ createOtp:(_params,callBack)=>{
 
     const ttl=2*60*1000;
     const expires=Date.now()+ttl;
-    const data= '${_params.phone}.${otp}.${expires}';
+    const data= `${_params.phone}.${otp}.${expires}`;
     const hash= crypto.createHmac("sha256",key).update(data).digest("hex");
-    const fullHash='${hash}.${expires}';
+    const fullHash=`${hash}.${expires}`;
     console.log('Your OTP is ${otp}');
     return callBack(null,fullHash);
 },
@@ -98,7 +98,7 @@ verifyOTP:(params,callBack)=>{
     let [hashValue,expires]=params.hash.split('.');
     let now=Date.now();
     if(now> parseInt(expires)) return callBack("OTP Expired");
-    let data='${params.phone}.${params.otp}.${expires}';
+    let data=`${params.phone}.${params.otp}.${expires}`;
     let newCalculateHash=crypto
     .createHmac('sha256',key)
     .update(data)
