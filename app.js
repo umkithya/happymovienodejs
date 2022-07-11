@@ -2,6 +2,9 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const userRouter = require("./api/users/user.router");
+// const sqlite3 = require('sqlite3');
+  
+// Connecting Database
 
 
 app.use(express.json());
