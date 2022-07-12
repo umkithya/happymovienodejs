@@ -294,28 +294,58 @@ async addWishlistByID(uid,param,callBack){
    
 },
 
+getCategoryItem: callBack=>{
+     pool.query('SELECT * FROM `tbcategory` ORDER BY tbcategory.categoryName;',[],(error,result)=>{
+        if(error){
+            return callBack(error);
+         }
+         return callBack(null,result);
+    });
+},
+async getMovieByCategory(page,param,callBack){
+    if(page!=0){
+        const limit = 2;
+        var pages = page;
+        var offset = (pages - 1) * limit
+        console.log("pages========"+pages)
+    return pool.query('SELECT tbmovies.movieID,movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.thumbnailUrl,tbmoviedetails.releaseDate,tbmoviedetails.overview FROM ((tbmovies INNER JOIN tbmoviedetails ON tbmoviedetails.movieID=tbmovies.movieID) INNER JOIN tbmoviecategory ON tbmoviecategory.movieID=tbmovies.movieID) WHERE tbmoviecategory.categoryID=? ORDER BY tbmovies.movieID limit ? OFFSET ?;',[param.categoryID,limit,offset],(err,result)=>{
+        if(error){
+            return callBack(error);
+         }
+         return callBack(null,result);
+    });}else{
+        console.log('TRUEEEEEEEEEEEEEEEEEE')
+        return pool.query('SELECT tbmovies.movieID,movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.thumbnailUrl,tbmoviedetails.releaseDate,tbmoviedetails.overview FROM ((tbmovies INNER JOIN tbmoviedetails ON tbmoviedetails.movieID=tbmovies.movieID) INNER JOIN tbmoviecategory ON tbmoviecategory.movieID=tbmovies.movieID) WHERE tbmoviecategory.categoryID=? ORDER BY tbmovies.movieID',[param.categoryID],(error,result)=>{
+            if(error){
+                return callBack(error);
+             }
+        console.log("result length========"+result.length)
+
+             return callBack(null,result);
+        });
+    }
+},
+
 async getPopular(page,param,callBack){
     if(page!=0){
         const limit = 2;
         var pages = page;
         var offset = (pages - 1) * limit
         console.log("pages========"+pages)
-        return pool.query("SELECT tbmovies.movieID,tbmoviedetails.movieDetailsID,movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.m3u8Url,tbmoviedetails.thumbnailUrl,tbmoviedetails.enUrlSRT,tbmoviedetails.khUrlSRT,tbmoviedetails.releaseDate FROM (tbmovies INNER JOIN tbmoviedetails ON tbmovies.movieID = tbmoviedetails.movieID) WHERE tbmoviedetails.rate >= ? AND YEAR(tbmoviedetails.releaseDate) BETWEEN ? AND ? ORDER BY movieID limit ? OFFSET ?;",[param.rate,param.start,param.end,limit,offset],(error,result)=>{
+        return pool.query("SELECT tbmovies.movieID,tbmoviedetails.movieDetailsID,movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.m3u8Url,tbmoviedetails.thumbnailUrl,tbmoviedetails.enUrlSRT,tbmoviedetails.khUrlSRT,tbmoviedetails.releaseDate,tbmoviedetails.overview FROM (tbmovies INNER JOIN tbmoviedetails ON tbmovies.movieID = tbmoviedetails.movieID) WHERE tbmoviedetails.rate >= ? AND YEAR(tbmoviedetails.releaseDate) BETWEEN ? AND ? ORDER BY movieID limit ? OFFSET ?;",[param.rate,param.start,param.end,limit,offset],(error,result)=>{
             if(error){
                return callBack(error);
             }
             return callBack(null,result);
         });
     }else{
-        return pool.query("SELECT tbmovies.movieID,tbmoviedetails.movieDetailsID,movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.m3u8Url,tbmoviedetails.thumbnailUrl,tbmoviedetails.enUrlSRT,tbmoviedetails.khUrlSRT,tbmoviedetails.releaseDate FROM (tbmovies INNER JOIN tbmoviedetails ON tbmovies.movieID = tbmoviedetails.movieID) WHERE tbmoviedetails.rate >= ? AND YEAR(tbmoviedetails.releaseDate) BETWEEN ? AND ? ORDER BY movieID;",[param.rate,param.start,param.end,],(error,result)=>{
+        return pool.query("SELECT tbmovies.movieID,tbmoviedetails.movieDetailsID,movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.m3u8Url,tbmoviedetails.thumbnailUrl,tbmoviedetails.enUrlSRT,tbmoviedetails.khUrlSRT,tbmoviedetails.releaseDate,tbmoviedetails.overview FROM (tbmovies INNER JOIN tbmoviedetails ON tbmovies.movieID = tbmoviedetails.movieID) WHERE tbmoviedetails.rate >= ? AND YEAR(tbmoviedetails.releaseDate) BETWEEN ? AND ? ORDER BY movieID;",[param.rate,param.start,param.end,],(error,result)=>{
             if(error){
                return callBack(error);
             }
             return callBack(null,result);
         });
-    }
-    
-   
+    }  
 },
 
 

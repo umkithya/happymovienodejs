@@ -15,9 +15,14 @@ const pool = createPool({
     });
    
     
-    module.exports = pool;
+module.exports = pool;
 
-
+pool.getConnection((err,connection)=> {
+    if(err)
+    throw err;
+    console.log('Database connected successfully');
+    connection.release();
+  });
 // const mysql = require("mysql");
 
 // const connection = mysql.createConnection({

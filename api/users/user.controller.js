@@ -1,6 +1,7 @@
 const res = require("express/lib/response");
-const {addWishlistByID,removeWishlistByMovieID,getitems,getPopular,getPopularMovies,exsting,signUp,getUserByID,getUsers,deleteUserByID,updateUser,getUserByUserName,createOtp,verifyOtp} = require("./user.service");
+const {getCategoryItem,getMovieByCategory,addWishlistByID,removeWishlistByMovieID,getitems,getPopular,getPopularMovies,exsting,signUp,getUserByID,getUsers,deleteUserByID,updateUser,getUserByUserName,createOtp,verifyOtp} = require("./user.service");
 const {genSaltSync,hashSync,compareSync}=require("bcrypt");
+
 var userid=0;
 const jwt=require("jsonwebtoken");
 const {userService} = require("./user.service");
@@ -290,7 +291,62 @@ module.exports={
         });
           
           
-    }
+    },
+    categoryItems:(req,res)=>{
+        getCategoryItem((err,results)=>{
+            if(err){
+                console.log(err);
+                return res.json({
+                    success:0,
+                    err: err,
+                });
+            }
+            return res.json({
+                success:1,
+                data: results,
+            });
+        });
+    },
+    categoryMovies:async(uid,req,res)=>{
+        console.log('userid'+uid);
+        const body=req.body;
+         page=req.query.page;
+        if(page==undefined){
+            page=0;
+        }
+        console.log("(page)"+page);
+        await getMovieByCategory(page,body,async(err,results)=>{
+            if(err){
+                        console.log(err);
+                        return ;
+                    }else{
+                        
+                        try {
+                            itemdata= await getitems(uid,results)
+                            if(results.length !=0){
+                                res.status(200).send({
+                                    success: 1,
+                                    page_number: req.query.page,
+                                    item_count: itemdata.length,
+                                    result: itemdata
+    
+                                            });
+                            }else{
+                                res.status(200).send({
+                                    success: 1,
+                                    page_number: req.query.page,
+                                    item_count: 0,
+                                    result: []
+    
+                                            });
+                            }
+                           
+                          } catch (error) {
+                            throw error;
+                          }
+                    }
+        });
+    },
    
     
 
