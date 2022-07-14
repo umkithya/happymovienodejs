@@ -9,9 +9,10 @@ const {createPool} = require("mysql");
 const pool = createPool({
         host: "127.0.0.1",
         user: "root",
-        password: "",
+        password: "root",
         database: "happymovie",
-        connectionLimit: 10
+        connectionLimit: 10,
+        socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
     });
    
     

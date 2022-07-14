@@ -1,5 +1,5 @@
 const res = require("express/lib/response");
-const {getMovieByLanguage,getLanguageItem,getCategoryItem,getMovieByCategory,addWishlistByID,removeWishlistByMovieID,getitems,getPopular,getPopularMovies,exsting,signUp,getUserByID,getUsers,deleteUserByID,updateUser,getUserByUserName,createOtp,verifyOtp} = require("./user.service");
+const {getMovieByLanguage,getLanguageItem,getCategoryItem,getMovieByCategory,addWishlistByID,removeWishlistByMovieID,getitems,getPopular,getPopularMovies,exsting,signUp,getUserByID,getUsers,deleteUserByID,updateUser,getUserByUserName,createOtp,verifyOtp,} = require("./user.service");
 const {genSaltSync,hashSync,compareSync}=require("bcrypt");
 
 var userid=0;
@@ -105,6 +105,15 @@ module.exports={
                 return res.json({
                     success:1,
                     message: 'added wishlist successful'
+                });
+            
+            
+        });
+    },
+    getSlideShow:(req,res)=>{
+        getSlideShow(req.body,(results)=>{
+                return res.json({
+                    message: results
                 });
             
             

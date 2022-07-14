@@ -1,6 +1,6 @@
 
 const router = require("express").Router();
-const {languageMovies,languageItems,categoryItems,categoryMovies,addWishlist,removeWishlist,popularMovies,isExisting,signUpUser,getUsers,updateUser,deleteUserByID, login,getOtp,verifyOTP} = require("./user.controller");
+const {languageMovies,languageItems,categoryItems,categoryMovies,addWishlist,removeWishlist,popularMovies,isExisting,signUpUser,getUsers,updateUser,deleteUserByID, login,getOtp,verifyOTP,getSlideShow} = require("./user.controller");
 const { checkToken } = require("../../auth/token_validation");
 var userid =require("./user.controller");
 
@@ -15,6 +15,7 @@ router.post("/signup",signUpUser);
 router.post("/existing",isExisting);
 router.get("/languages",languageItems);
 router.get("/categorys",categoryItems);
+router.get("/slide-show",getSlideShow);
 // router.post("/popular-movies",checkToken,popularMovies);
 router.post("/language-movies",checkToken, async(req, res, next) => {
     
