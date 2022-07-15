@@ -323,7 +323,7 @@ getCategoryItem: callBack=>{
 },
 async getFavoriteMovies(uid,page,callBack){
     if(page!=0){
-        const limit = 2;
+        const limit = 10;
         var pages = page;
         var offset = (pages - 1) * limit
         console.log("pages========"+pages)
@@ -346,7 +346,7 @@ async getFavoriteMovies(uid,page,callBack){
 },
 async getMovieByCategory(page,param,callBack){
     if(page!=0){
-        const limit = 2;
+        const limit = 10;
         var pages = page;
         var offset = (pages - 1) * limit
         console.log("pages========"+pages)
@@ -369,7 +369,7 @@ async getMovieByCategory(page,param,callBack){
 },
 async getMovieByLanguage(page,param,callBack){
     if(page!=0){
-        const limit = 2;
+        const limit = 10;
         var pages = page;
         var offset = (pages - 1) * limit
         console.log("pages========"+pages)
@@ -393,7 +393,7 @@ async getMovieByLanguage(page,param,callBack){
 
 async getPopular(page,param,callBack){
     if(page!=0){
-        const limit = 2;
+        const limit = 10;
         var pages = page;
         var offset = (pages - 1) * limit
         console.log("pages========"+pages)
