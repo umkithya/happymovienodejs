@@ -212,14 +212,14 @@ createOtp: async(_params,callBack)=>{
     port: 465,
     secure: true,
     auth: {
-      user: 'ahpolojoykhrealzin@gmail.com',
-      pass: 't z q a l r e o h g b h n l x s',
+      user: 'happymovieofficial@gmail.com',
+      pass: 'pywennbrhfdokcal',
     },
     
   });
 
   const options={
-      from:"ahpolojoykhrealzin@gmail.com",
+      from:"happymovieofficial@gmail.com",
       to: ""+_params.username,
       subject: "Happy Movie App Account Verification OTP",
       html: html+otp+'\
