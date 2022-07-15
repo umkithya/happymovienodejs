@@ -122,6 +122,15 @@ module.exports={
             
         });
     },
+    getSlideShow:(req,res)=>{
+        getSlideShow(req.body,(results)=>{
+                return res.json({
+                    message: results
+                });
+            
+            
+        });
+    },
     login:(req,res)=>{
         const body=req.body;
 

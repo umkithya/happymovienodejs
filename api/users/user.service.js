@@ -110,6 +110,16 @@ module.exports={
         }
      );
  },
+ getSlideShow: callBack=>{
+     pool.query(
+         'SELECT imageUrl FROM tbslideshow',
+        
+        (result)=>{
+            
+            return result;
+        }
+     );
+ },
  getUserByID:(userid,callBack) =>{
     pool.query(
         'SELECT userID, username, password FROM tbuser WHERE userID=?',
@@ -305,6 +315,7 @@ async addWishlistByID(uid,param,callBack){
     
    
 },
+
 getLanguageItem: callBack=>{
     pool.query('SELECT * FROM `tblanguage` ORDER BY tblanguage.languageID;',[],(error,result)=>{
        if(error){
