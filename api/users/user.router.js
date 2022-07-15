@@ -1,6 +1,6 @@
 
 const router = require("express").Router();
-const {languageMovies,languageItems,categoryItems,categoryMovies,addWishlist,removeWishlist,popularMovies,isExisting,signUpUser,getUsers,updateUser,deleteUserByID, login,getOtp,verifyOTP} = require("./user.controller");
+const {fetchSlideShow,favoriteMovies,languageMovies,languageItems,categoryItems,categoryMovies,addWishlist,removeWishlist,popularMovies,isExisting,signUpUser,getUsers,updateUser,deleteUserByID, login,getOtp,verifyOTP} = require("./user.controller");
 const { checkToken } = require("../../auth/token_validation");
 var userid =require("./user.controller");
 
@@ -15,6 +15,7 @@ router.post("/signup",signUpUser);
 router.post("/existing",isExisting);
 router.get("/languages",languageItems);
 router.get("/categorys",categoryItems);
+router.get("/slide-show",fetchSlideShow);
 // router.post("/popular-movies",checkToken,popularMovies);
 router.post("/language-movies",checkToken, async(req, res, next) => {
     
@@ -39,6 +40,11 @@ router.post("/popular-movies",checkToken, async(req, res, next) => {
   router.post("/add-wishlist",checkToken, async(req, res, next) => {
     
     await addWishlist(req.decoded['userId'],req, res);
+    
+  });
+  router.get("/favourite-movies",checkToken, async(req, res, next) => {
+    
+    await favoriteMovies(req.decoded['userId'],req, res);
     
   });
   

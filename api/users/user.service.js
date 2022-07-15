@@ -5,6 +5,7 @@ const crypto = require('crypto');
 const nodemailer = require("nodemailer");
 const format = require('html-format');
 const { Console } = require("console");
+const { off } = require("process");
 
 
 const html = `\
@@ -154,6 +155,17 @@ getUserByUserName:(username,callBack) =>{
               return callBack(error);
            }
            return callBack(null,result[0]);
+       }
+    );
+},
+getSlideShow:(callBack) =>{
+    pool.query(
+        'SELECT `slideshowID`, `imageSlideUrl` FROM `tbslideshow`',
+       (error,result ,fields)=>{
+           if(error){
+              return callBack(error);
+           }
+           return callBack(null,result);
        }
     );
 },
@@ -308,6 +320,29 @@ getCategoryItem: callBack=>{
          }
          return callBack(null,result);
     });
+},
+async getFavoriteMovies(uid,page,callBack){
+    if(page!=0){
+        const limit = 2;
+        var pages = page;
+        var offset = (pages - 1) * limit
+        console.log("pages========"+pages)
+    return pool.query('SELECT tbmovies.movieID,tbmovies.movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.thumbnailUrl,tbmoviedetails.releaseDate,tbmoviedetails.overview,tbwishlist.wishlistID FROM (((tbmovies INNER JOIN tbmoviedetails ON tbmoviedetails.movieID=tbmovies.movieID) INNER JOIN tbwishlist ON tbwishlist.movieID=tbmovies.movieID) INNER JOIN tbuser ON tbuser.userID=tbwishlist.userID) WHERE tbuser.userID=? ORDER BY tbwishlist.wishlistID limit ? OFFSET ?;',[uid,limit,offset],(err,result)=>{
+        if(error){
+            return callBack(error);
+         }
+         return callBack(null,result);
+    });}else{
+        console.log('TRUEEEEEEEEEEEEEEEEEE')
+        return pool.query('SELECT tbmovies.movieID,tbmovies.movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.thumbnailUrl,tbmoviedetails.releaseDate,tbmoviedetails.overview,tbwishlist.wishlistID FROM (((tbmovies INNER JOIN tbmoviedetails ON tbmoviedetails.movieID=tbmovies.movieID) INNER JOIN tbwishlist ON tbwishlist.movieID=tbmovies.movieID) INNER JOIN tbuser ON tbuser.userID=tbwishlist.userID) WHERE tbuser.userID=? ORDER BY tbwishlist.wishlistID',[uid],(error,result)=>{
+            if(error){
+                return callBack(error);
+             }
+        console.log("result length========"+result.length)
+
+             return callBack(null,result);
+        });
+    }
 },
 async getMovieByCategory(page,param,callBack){
     if(page!=0){

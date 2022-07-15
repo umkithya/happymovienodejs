@@ -7,10 +7,10 @@ const {createPool} = require("mysql");
 // //     connectionLimit: 10
 // // });
 const pool = createPool({
-        host: "127.0.0.1",
-        user: "root",
-        password: "",
-        database: "happymovie",
+        host: "us-cdbr-east-06.cleardb.net",
+        user: "bd6bf9cdcc6ea8",
+        password: "75a29b38",
+        database: "heroku_57cb13615807d7d",
         connectionLimit: 10
     });
    
