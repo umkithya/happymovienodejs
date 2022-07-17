@@ -218,7 +218,7 @@ module.exports={
         const body=req.body;
         const salt=genSaltSync(10);
         body.password=hashSync(body.password,salt);
-        resetPassword(body,(err,results)=>{
+        resetPassword(body,async(err,results)=>{
             if(err){
                 console.log(err);
                 return res.status(404).json({
