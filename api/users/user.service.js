@@ -55,7 +55,7 @@ const htmlForgot = `\
                                             We cannot simply send you your old password. This is the OTP code that you need to be verify.
                                         </p>
                                         <a href="javascript:void(0);"
-                                        style="background:#244568;text-decoration:none !important; font-weight:500; margin-top:35px; color:#fff;text-transform:uppercase; font-size:14px;padding:10px 24px;display:inline-block;border-radius:50px;">
+                                        style="background:#244568;text-decoration:none !important; font-weight:500; margin-top:35px; color:#fff;text-transform:uppercase; font-size:20px;padding:10px 24px;display:inline-block;border-radius:50px;">
 `;
 
 
