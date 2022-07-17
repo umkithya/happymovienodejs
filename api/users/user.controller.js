@@ -1,5 +1,5 @@
 const res = require("express/lib/response");
-const {getSlideShow,getFavoriteMovies,getMovieByLanguage,getLanguageItem,getCategoryItem,getMovieByCategory,addWishlistByID,removeWishlistByMovieID,getitems,getPopular,getPopularMovies,exsting,signUp,getUserByID,getUsers,deleteUserByID,updateUser,getUserByUserName,createOtp,verifyOtp} = require("./user.service");
+const {getOtpForgotPass,getSlideShow,getFavoriteMovies,getMovieByLanguage,getLanguageItem,getCategoryItem,getMovieByCategory,addWishlistByID,removeWishlistByMovieID,getitems,getPopular,getPopularMovies,exsting,signUp,getUserByID,getUsers,deleteUserByID,updateUser,getUserByUserName,createOtp,verifyOtp} = require("./user.service");
 const {genSaltSync,hashSync,compareSync}=require("bcrypt");
 
 var userid=0;
@@ -210,6 +210,31 @@ module.exports={
                 
             })
                         
+        });
+    },
+    sendOtpForgotPass:(req,res,next)=>{
+        getOtpForgotPass(req.body,(err,results)=>{
+            if(err){
+                return res.status(401).send({
+                    message: err,
+                 });
+            }
+            console.log("results.length"+results.length)
+            if(err){
+                console.log("error"+err);
+                return ;
+            }
+            else if(results.toLowerCase() == 'isnotexisting'){
+                return res.status(409).send({
+                  msg: 'This username is not found!',
+                });
+              } else{
+                return res.status(200).send({
+                    message: "The OTP has been sent to your email",
+                    data: results
+                   });
+              }
+            
         });
     },
     getOtp:(req,res,next)=>{
