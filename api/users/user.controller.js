@@ -1,5 +1,5 @@
 const res = require("express/lib/response");
-const {getOtpForgotPass,getSlideShow,getFavoriteMovies,getMovieByLanguage,getLanguageItem,getCategoryItem,getMovieByCategory,addWishlistByID,removeWishlistByMovieID,getitems,getPopular,getPopularMovies,exsting,signUp,getUserByID,getUsers,deleteUserByID,updateUser,getUserByUserName,createOtp,verifyOtp} = require("./user.service");
+const {resetPassword,getOtpForgotPass,getSlideShow,getFavoriteMovies,getMovieByLanguage,getLanguageItem,getCategoryItem,getMovieByCategory,addWishlistByID,removeWishlistByMovieID,getitems,getPopular,getPopularMovies,exsting,signUp,getUserByID,getUsers,deleteUserByID,updateUser,getUserByUserName,createOtp,verifyOtp} = require("./user.service");
 const {genSaltSync,hashSync,compareSync}=require("bcrypt");
 
 var userid=0;
@@ -210,6 +210,23 @@ module.exports={
                 
             })
                         
+        });
+    },
+    createNewPassword:(req,res)=>{
+        
+
+        const body=req.body;
+        const salt=genSaltSync(10);
+        body.password=hashSync(body.password,salt);
+        resetPassword(body,(err,results)=>{
+            if(err){
+                console.log(err);
+               return ;
+            }
+            return res.status(200).json({
+                success:1,
+                message: 'your password has been reset'
+            });
         });
     },
     sendOtpForgotPass:(req,res,next)=>{

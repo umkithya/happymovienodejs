@@ -219,14 +219,14 @@ getSlideShow:(callBack) =>{
        }
     );
 },
-resetPassword:(callBack) =>{
+resetPassword:(param,callBack) =>{
     pool.query(
-        'SELECT `slideshowID`, `imageSlideUrl` FROM `tbslideshow`',
+        'UPDATE `tbuser` SET `password`=? WHERE username=?',[param.password,param.username],
        (error,result ,fields)=>{
            if(error){
               return callBack(error);
            }
-           return callBack(null,result);
+           return callBack(null,result[0]);
        }
     );
 },
