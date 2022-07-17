@@ -19,14 +19,43 @@ const html = `\
     <h2 style="background: #00466a;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;">
 `;
 const htmlForgot = `\
-<div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
-  <div style="margin:50px auto;width:70%;padding:20px 0">
-    <div style="border-bottom:1px solid #eee">
-      <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Forgot Password OTP Verification Code</a>
-    </div>
-    <p style="font-size:1.1em">Hi,</p>
-    <p>You have requested to reset the password of your Happy Movie account. Use the following OTP to complete your forgot password procedures. OTP is valid for 5 minutes</p>
-    <h2 style="background: #00466a;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;">
+<table cellspacing="0" border="0" cellpadding="0" width="100%" bgcolor="#f2f3f8"
+        style="@import url(https://fonts.googleapis.com/css?family=Rubik:300,400,500,700|Open+Sans:300,400,600,700); font-family: 'Open Sans', sans-serif;">
+        <tr>
+            <td>
+                <table style="background-color: #f2f3f8; max-width:670px;  margin:0 auto;" width="100%" border="0"
+                    align="center" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td style="height:80px;">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:center;">
+                          <a href="https://rakeshmandal.com" title="logo" target="_blank">
+                            <img width="100" src="https://firebasestorage.googleapis.com/v0/b/movie-api-90973.appspot.com/o/logo.jpg?alt=media&token=7b6c449e-def6-48f5-a470-8db6b2af78dc" title="logo" alt="logo">
+                          </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="height:20px;">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table width="95%" border="0" align="center" cellpadding="0" cellspacing="0"
+                                style="max-width:670px;background:#fff; border-radius:3px; text-align:center;-webkit-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);-moz-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);box-shadow:0 6px 18px 0 rgba(0,0,0,.06);">
+                                <tr>
+                                    <td style="height:40px;">&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:0 35px;">
+                                        <h1 style="color:#1e1e2d; font-weight:600; margin:0;font-size:32px;font-family:'Rubik',sans-serif;">You have
+                                            requested to reset your password</h1>
+                                        <span
+                                            style="display:inline-block; vertical-align:middle; margin:29px 0 26px; border-bottom:1px solid #cecece; width:100px;"></span>
+                                        <p style="color:#244568; font-size:15px;line-height:24px; margin:0;">
+                                            We cannot simply send you your old password. This is the OTP code that you need to be verify.
+                                        </p>
+                                        <a href="javascript:void(0);"
+                                        style="background:#244568;text-decoration:none !important; font-weight:500; margin-top:35px; color:#fff;text-transform:uppercase; font-size:14px;padding:10px 24px;display:inline-block;border-radius:50px;">
 `;
 
 
@@ -228,11 +257,9 @@ getOtpForgotPass: async(_params,callBack)=>{
   const options={
       from:"happymovieofficial@gmail.com",
       to: ""+_params.username,
-      subject: "Forgot Password OTP Verification Code",
-      html: htmlForgot+otp+'\
-     </h2><p style="font-size:0.9em;">Regards,<br />Your Brand</p><hr style="border:none;border-top:1px solid #eee" /><div style="float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300"><p>Your Brand Inc</p>'
-      +'<p>1600 Amphitheatre Parkway</p>'
-      +'<p>California</p></div></div></div>'
+      subject: "Reset your Happy Movie password",
+      html: htmlForgot+otp+'\</a></td> </tr><tr><td style="height:40px;">&nbsp;</td></tr></table></td><tr><td style="height:20px;">&nbsp;</td></tr><tr><td style="text-align:center;"><p style="font-size:14px; color:rgba(69, 80, 86, 0.7411764705882353); line-height:18px; margin:0 0 0;">&copy; <strong>Copyright 2022 Happy Movie</strong></p>'
++'</td></tr><tr><td style="height:80px;">&nbsp;</td></tr></table></td></tr></table>'
   }
 
   // send mail with defined transport object
