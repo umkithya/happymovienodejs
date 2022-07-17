@@ -221,12 +221,33 @@ module.exports={
         resetPassword(body,(err,results)=>{
             if(err){
                 console.log(err);
-               return ;
+                return res.status(404).json({
+                        success: 0,
+                        message: err,
+                });
             }
-            return res.status(200).json({
-                success:1,
-                message: 'your password has been reset'
-            });
+            await getUserByUserName(body.username,(err,results)=>{
+                if(!results){
+                    return res.status(401).json({
+                        success: 0,
+                        message: 'Invalid username'
+                });
+                }
+                    const jsontoken = jwt.sign({
+                        username: results.username,
+                        userId: results.userID 
+                      },
+                      'SECRETKEY', {
+                        expiresIn: '7d'
+                      }
+                    );
+                    return res.json({
+                        success:1,
+                        message: 'your password has been reset successfully',
+                        token: jsontoken,
+                    }); 
+                
+            })
         });
     },
     sendOtpForgotPass:(req,res,next)=>{
