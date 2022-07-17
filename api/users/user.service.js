@@ -269,7 +269,7 @@ getOtpForgotPass: async(_params,callBack)=>{
   const options={
       from:"happymovieofficial@gmail.com",
       to: ""+_params.username,
-      subject: "Reset your Happy Movie password",
+      subject: "Reset your Happy Movie App password",
       html: htmlForgot+otp+'\ </a> <br><br> <br><br><p style="color:#244568; font-size:15px;line-height:24px; margin:0;">If you don\'t wish to reset your password, disregard this email and no action will be taken.</p>'
       +'</td></tr><tr><td style="height:40px;">&nbsp;</td></tr></table></td><tr><td style="height:20px;">&nbsp;</td></tr><tr><td style="text-align:center;"><span style="display:inline-block; vertical-align:middle; margin:29px 0 26px; border-bottom:1px solid #cecece; width:100px;"></span>'
 +'<p style="font-size:14px; color:rgba(69, 80, 86, 0.7411764705882353); line-height:18px; margin:0 0 0;">&copy; <strong>Copyright 2022 Happy Movie</strong></p></td></tr><tr><td style="height:80px;">&nbsp;</td></tr>'
