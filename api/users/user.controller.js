@@ -227,6 +227,13 @@ module.exports={
                 });
             }
             await getUserByUserName(body.username,(err,results)=>{
+                if(err){
+                console.log(err);
+                return res.status(404).json({
+                        success: 0,
+                        message: err,
+                });
+            }
                 if(!results){
                     return res.status(401).json({
                         success: 0,
