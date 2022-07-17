@@ -242,7 +242,7 @@ module.exports={
                 return ;
             }
             else if(results.toLowerCase() == 'isnotexisting'){
-                return res.status(409).send({
+                return res.status(401).send({
                   msg: 'This username is not found!',
                 });
               } else{
