@@ -371,7 +371,7 @@ module.exports={
         const body=req.body;
          
         console.log("(page)"+page);
-        await getMoviesBySearch(page,body.searchName,async(err,results)=>{
+        await getMoviesBySearch(body.searchName,async(err,results)=>{
             if(err){
                         console.log(err);
                         return ;
