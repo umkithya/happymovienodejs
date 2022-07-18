@@ -492,7 +492,7 @@ getCategoryItem: callBack=>{
 async getMoviesBySearch(search,callBack){
    
         const limit = 7;
-    return pool.query('SELECT tbmovies.movieID,tbmovies.movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.thumbnailUrl,tbmoviedetails.releaseDate,tbmoviedetails.overview,tbmoviedetails.hour FROM (tbmovies INNER JOIN tbmoviedetails ON tbmoviedetails.movieID=tbmovies.movieID) WHERE LOWER(tbmovies.movieTitle) LIKE '+search+"__%"+' ORDER BY tbmovies.movieTitle limit ?;',[limit],(err,result)=>{
+    return pool.query("SELECT tbmovies.movieID,tbmovies.movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.thumbnailUrl,tbmoviedetails.releaseDate,tbmoviedetails.overview,tbmoviedetails.hour FROM (tbmovies INNER JOIN tbmoviedetails ON tbmoviedetails.movieID=tbmovies.movieID) WHERE LOWER(tbmovies.movieTitle) LIKE '"+search+"__%' ORDER BY tbmovies.movieTitle limit ?;",[limit],(err,result)=>{
         if(err){
             return callBack(err);
          }
