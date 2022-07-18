@@ -82,7 +82,18 @@ module.exports={
         });
     },
     removeWishlist:(uid,req,res)=>{
-        removeWishlistByMovieID(uid,req.body,(err,results)=>{
+        var id=0;
+        var isMovie=true;
+        console.log(req.body.movieID)
+        if(req.body.movieID!=undefined){
+            id=req.body.movieID;
+            isMovie=true;
+        }
+        if(req.body.tvshowID!=undefined){
+            id=req.body.tvshowID;
+            isMovie=false;
+        }
+        removeWishlistByMovieID(uid,id,isMovie,(err,results)=>{
             if(err){
                 console.log(err);
                return ;
@@ -91,7 +102,7 @@ module.exports={
             if(results == true){
                 res.status(404).json({
                 success:0,
-                message: 'this movie are not contains a wishlist'
+                message: isMovie ? 'this movie are not contains a wishlist':'this show are not contains a wishlist'
             });
             }else{
                 return res.json({
@@ -103,15 +114,28 @@ module.exports={
         });
     },
     addWishlist:(uid,req,res)=>{
-        addWishlistByID(uid,req.body,(err,results)=>{
+        var id=0;
+        var isMovie=true;
+        console.log(req.body.movieID)
+        if(req.body.movieID!=undefined){
+            id=req.body.movieID;
+            isMovie=true;
+        }
+        if(req.body.tvshowID!=undefined){
+            id=req.body.tvshowID;
+            isMovie=false;
+        }
+       
+
+        addWishlistByID(uid,id,isMovie,(err,results)=>{
             if(err){
                 console.log(err);
                return ;
             }
             if(results==true){
-                return res.status(404).json({
+                return res.status(409).json({
                     success:0,
-                    message: 'this movie is already contain a wishlist'
+                    message: isMovie ? 'this movie is already contain a wishlist':'this show is already contain a wishlist'
                 }); 
             }
                 return res.json({

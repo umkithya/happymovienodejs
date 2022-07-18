@@ -64,7 +64,7 @@ const htmlForgot = `\
 const key="otp-secret-key";
 async function getCategory(movieID){
     return new Promise(function(resolve, reject) {
-        pool.query("SELECT tbcategory.categoryName FROM `tbmoviecategory` INNER JOIN tbcategory ON tbcategory.categoryID=tbmoviecategory.categoryID WHERE tbmoviecategory.movieID="+movieID+"",(error,result)=>{
+        pool.query("SELECT tbcategory.categoryID,tbcategory.categoryName FROM `tbmoviecategory` INNER JOIN tbcategory ON tbcategory.categoryID=tbmoviecategory.categoryID WHERE tbmoviecategory.movieID="+movieID+"",(error,result)=>{
             if(error){
                return ;
             }
@@ -98,16 +98,29 @@ async function filterWishListByMovieID(userID,movieID){
       });
     
 } 
-async function isExistingWishList(userID,movieID){
-    return new Promise(function(resolve, reject) {
-        pool.query("SELECT * FROM tbwishlist WHERE movieID="+movieID+" AND userID="+userID+";",(error,result)=>{
-            if(error){
-               return ;
-            }
-            return resolve(result);
-        });
-        
-      });
+async function isExistingWishList(userID,id,ismovie){
+    if(ismovie==true){
+        return new Promise(function(resolve, reject) {
+            pool.query("SELECT * FROM tbwishlist WHERE movieID="+id+" AND userID="+userID+";",(error,result)=>{
+                if(error){
+                   return ;
+                }
+                return resolve(result);
+            });
+            
+          });
+    }else{
+        return new Promise(function(resolve, reject) {
+            pool.query("SELECT * FROM tbtvshowwishlist WHERE tvshowID="+id+" AND userID="+userID+";",(error,result)=>{
+                if(error){
+                   return ;
+                }
+                return resolve(result);
+            });
+            
+          });
+    }
+    
     
 } 
 
@@ -385,32 +398,63 @@ verifyOtp: async (params,callBack)=> {
        }
     );
 },
-async removeWishlistByMovieID(uid,param,callBack){
-    console.log('param.movieID=========='+param.movieID);
+async removeWishlistByMovieID(uid,id,ismovie,callBack){
     console.log('uid========'+uid);
-    return pool.query("DELETE FROM `tbwishlist` WHERE movieID=? AND userID=?;",[param.movieID,uid],(error,result)=>{
-        if(error){
-            return callBack(error);
-         }
-         else if(result.affectedRows == 0){
-            console.log('result.affectedRows========'+result.affectedRows);
-            return callBack(null,true);
-         }else{
-            console.log('result.affectedRows========'+result.affectedRows);
-
-            return callBack(null,result[0]);
-
-         }
-    });
+    if(ismovie==true){
+        return pool.query("DELETE FROM `tbwishlist` WHERE movieID=? AND userID=?;",[id,uid],(error,result)=>{
+            if(error){
+                return callBack(error);
+             }
+             else if(result.affectedRows == 0){
+                console.log('result.affectedRows========'+result.affectedRows);
+                return callBack(null,true);
+             }else{
+                console.log('result.affectedRows========'+result.affectedRows);
+    
+                return callBack(null,result[0]);
+    
+             }
+        });
+    }else{
+        return pool.query("DELETE FROM `tbtvshowwishlist` WHERE tvshowID=? AND userID=?;",[id,uid],(error,result)=>{
+            if(error){
+                return callBack(error);
+             }
+             else if(result.affectedRows == 0){
+                console.log('result.affectedRows========'+result.affectedRows);
+                return callBack(null,true);
+             }else{
+                console.log('result.affectedRows========'+result.affectedRows);
+    
+                return callBack(null,result[0]);
+    
+             }
+        });
+    }
+    
    
 },
 
-async addWishlistByID(uid,param,callBack){
-    console.log('param.movieID=========='+param.movieID);
+async addWishlistByID(uid,id,ismovie,callBack){
     console.log('uid========'+uid);
-    const result=await isExistingWishList(uid,param.movieID);
-    if(result.length ==0){
-        return pool.query("INSERT INTO `tbwishlist` (`movieID`, `userID`) VALUES ('?', '?');",[param.movieID,uid],(error,results)=>{
+    if(ismovie==true){
+    const result=await isExistingWishList(uid,id,true);
+        if(result.length ==0){
+            return pool.query("INSERT INTO `tbwishlist` (`movieID`, `userID`) VALUES ('?', '?');",[id,uid],(error,results)=>{
+            if(error){
+                return callBack(error);
+             }
+              return callBack(null,results[0]);
+             });
+        }else{
+        //this movies is already contain wishlist
+        return callBack(null,true);
+        }
+    }
+    else{
+        const result=await isExistingWishList(uid,id,false);
+        if(result.length ==0){
+            return pool.query("INSERT INTO `tbtvshowwishlist` (`tvshowID`, `userID`) VALUES ('?', '?');",[id,uid],(error,results)=>{
             if(error){
                 return callBack(error);
              }
@@ -419,10 +463,11 @@ async addWishlistByID(uid,param,callBack){
                 return callBack(null,results[0]);
     
            
-        });
-    }else{
+             });
+        }else{
         //this movies is already contain wishlist
         return callBack(null,true);
+    }
     }
     
    
@@ -450,14 +495,14 @@ async getFavoriteMovies(uid,page,callBack){
         var pages = page;
         var offset = (pages - 1) * limit
         console.log("pages========"+pages)
-    return pool.query('SELECT tbmovies.movieID,tbmovies.movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.thumbnailUrl,tbmoviedetails.releaseDate,tbmoviedetails.overview,tbwishlist.wishlistID FROM (((tbmovies INNER JOIN tbmoviedetails ON tbmoviedetails.movieID=tbmovies.movieID) INNER JOIN tbwishlist ON tbwishlist.movieID=tbmovies.movieID) INNER JOIN tbuser ON tbuser.userID=tbwishlist.userID) WHERE tbuser.userID=? ORDER BY tbwishlist.wishlistID limit ? OFFSET ?;',[uid,limit,offset],(err,result)=>{
+    return pool.query('SELECT tbmovies.movieID,tbmovies.movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.thumbnailUrl,tbmoviedetails.releaseDate,tbmoviedetails.overview,tbmoviedetails.hour,tbwishlist.wishlistID FROM (((tbmovies INNER JOIN tbmoviedetails ON tbmoviedetails.movieID=tbmovies.movieID) INNER JOIN tbwishlist ON tbwishlist.movieID=tbmovies.movieID) INNER JOIN tbuser ON tbuser.userID=tbwishlist.userID) WHERE tbuser.userID=? ORDER BY tbwishlist.wishlistID limit ? OFFSET ?;',[uid,limit,offset],(err,result)=>{
         if(error){
             return callBack(error);
          }
          return callBack(null,result);
     });}else{
         console.log('TRUEEEEEEEEEEEEEEEEEE')
-        return pool.query('SELECT tbmovies.movieID,tbmovies.movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.thumbnailUrl,tbmoviedetails.releaseDate,tbmoviedetails.overview,tbwishlist.wishlistID FROM (((tbmovies INNER JOIN tbmoviedetails ON tbmoviedetails.movieID=tbmovies.movieID) INNER JOIN tbwishlist ON tbwishlist.movieID=tbmovies.movieID) INNER JOIN tbuser ON tbuser.userID=tbwishlist.userID) WHERE tbuser.userID=? ORDER BY tbwishlist.wishlistID',[uid],(error,result)=>{
+        return pool.query('SELECT tbmovies.movieID,tbmovies.movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.thumbnailUrl,tbmoviedetails.releaseDate,tbmoviedetails.overview,tbmoviedetails.hour,tbwishlist.wishlistID FROM (((tbmovies INNER JOIN tbmoviedetails ON tbmoviedetails.movieID=tbmovies.movieID) INNER JOIN tbwishlist ON tbwishlist.movieID=tbmovies.movieID) INNER JOIN tbuser ON tbuser.userID=tbwishlist.userID) WHERE tbuser.userID=? ORDER BY tbwishlist.wishlistID',[uid],(error,result)=>{
             if(error){
                 return callBack(error);
              }
@@ -473,14 +518,14 @@ async getMovieByCategory(page,param,callBack){
         var pages = page;
         var offset = (pages - 1) * limit
         console.log("pages========"+pages)
-    return pool.query('SELECT tbmovies.movieID,movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.thumbnailUrl,tbmoviedetails.releaseDate,tbmoviedetails.overview FROM ((tbmovies INNER JOIN tbmoviedetails ON tbmoviedetails.movieID=tbmovies.movieID) INNER JOIN tbmoviecategory ON tbmoviecategory.movieID=tbmovies.movieID) WHERE tbmoviecategory.categoryID=? ORDER BY tbmovies.movieID limit ? OFFSET ?;',[param.categoryID,limit,offset],(err,result)=>{
+    return pool.query('SELECT tbmovies.movieID,movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.thumbnailUrl,tbmoviedetails.releaseDate,tbmoviedetails.overview,tbmoviedetails.hour FROM ((tbmovies INNER JOIN tbmoviedetails ON tbmoviedetails.movieID=tbmovies.movieID) INNER JOIN tbmoviecategory ON tbmoviecategory.movieID=tbmovies.movieID) WHERE tbmoviecategory.categoryID=? ORDER BY tbmovies.movieID limit ? OFFSET ?;',[param.categoryID,limit,offset],(err,result)=>{
         if(error){
             return callBack(error);
          }
          return callBack(null,result);
     });}else{
         console.log('TRUEEEEEEEEEEEEEEEEEE')
-        return pool.query('SELECT tbmovies.movieID,movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.thumbnailUrl,tbmoviedetails.releaseDate,tbmoviedetails.overview FROM ((tbmovies INNER JOIN tbmoviedetails ON tbmoviedetails.movieID=tbmovies.movieID) INNER JOIN tbmoviecategory ON tbmoviecategory.movieID=tbmovies.movieID) WHERE tbmoviecategory.categoryID=? ORDER BY tbmovies.movieID',[param.categoryID],(error,result)=>{
+        return pool.query('SELECT tbmovies.movieID,movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.thumbnailUrl,tbmoviedetails.releaseDate,tbmoviedetails.overview,tbmoviedetails.hour FROM ((tbmovies INNER JOIN tbmoviedetails ON tbmoviedetails.movieID=tbmovies.movieID) INNER JOIN tbmoviecategory ON tbmoviecategory.movieID=tbmovies.movieID) WHERE tbmoviecategory.categoryID=? ORDER BY tbmovies.movieID',[param.categoryID],(error,result)=>{
             if(error){
                 return callBack(error);
              }
@@ -496,14 +541,14 @@ async getMovieByLanguage(page,param,callBack){
         var pages = page;
         var offset = (pages - 1) * limit
         console.log("pages========"+pages)
-    return pool.query('SELECT tbmovies.movieID,movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.thumbnailUrl,tbmoviedetails.releaseDate,tbmoviedetails.overview FROM ((tbmovies INNER JOIN tbmoviedetails ON tbmoviedetails.movieID=tbmovies.movieID) INNER JOIN tbmovielanguage ON tbmovielanguage.movieID=tbmovies.movieID) WHERE tbmovielanguage.languageID=? ORDER BY tbmovies.movieID limit ? OFFSET ?;',[param.languageID,limit,offset],(err,result)=>{
+    return pool.query('SELECT tbmovies.movieID,movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.thumbnailUrl,tbmoviedetails.releaseDate,tbmoviedetails.overview,tbmoviedetails.hour FROM ((tbmovies INNER JOIN tbmoviedetails ON tbmoviedetails.movieID=tbmovies.movieID) INNER JOIN tbmovielanguage ON tbmovielanguage.movieID=tbmovies.movieID) WHERE tbmovielanguage.languageID=? ORDER BY tbmovies.movieID limit ? OFFSET ?;',[param.languageID,limit,offset],(err,result)=>{
         if(error){
             return callBack(error);
          }
          return callBack(null,result);
     });}else{
         console.log('TRUEEEEEEEEEEEEEEEEEE')
-        return pool.query('SELECT tbmovies.movieID,movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.thumbnailUrl,tbmoviedetails.releaseDate,tbmoviedetails.overview FROM ((tbmovies INNER JOIN tbmoviedetails ON tbmoviedetails.movieID=tbmovies.movieID) INNER JOIN tbmovielanguage ON tbmovielanguage.movieID=tbmovies.movieID) WHERE tbmovielanguage.languageID=? ORDER BY tbmovies.movieID;',[param.languageID],(error,result)=>{
+        return pool.query('SELECT tbmovies.movieID,movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.thumbnailUrl,tbmoviedetails.releaseDate,tbmoviedetails.overview,tbmoviedetails.hour FROM ((tbmovies INNER JOIN tbmoviedetails ON tbmoviedetails.movieID=tbmovies.movieID) INNER JOIN tbmovielanguage ON tbmovielanguage.movieID=tbmovies.movieID) WHERE tbmovielanguage.languageID=? ORDER BY tbmovies.movieID;',[param.languageID],(error,result)=>{
             if(error){
                 return callBack(error);
              }
@@ -520,14 +565,14 @@ async getPopular(page,param,callBack){
         var pages = page;
         var offset = (pages - 1) * limit
         console.log("pages========"+pages)
-        return pool.query("SELECT tbmovies.movieID,tbmoviedetails.movieDetailsID,movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.m3u8Url,tbmoviedetails.thumbnailUrl,tbmoviedetails.enUrlSRT,tbmoviedetails.khUrlSRT,tbmoviedetails.releaseDate,tbmoviedetails.overview FROM (tbmovies INNER JOIN tbmoviedetails ON tbmovies.movieID = tbmoviedetails.movieID) WHERE tbmoviedetails.rate >= ? AND YEAR(tbmoviedetails.releaseDate) BETWEEN ? AND ? ORDER BY movieID limit ? OFFSET ?;",[param.rate,param.start,param.end,limit,offset],(error,result)=>{
+        return pool.query("SELECT tbmovies.movieID,tbmoviedetails.movieDetailsID,movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.m3u8Url,tbmoviedetails.thumbnailUrl,tbmoviedetails.enUrlSRT,tbmoviedetails.khUrlSRT,tbmoviedetails.releaseDate,tbmoviedetails.overview,tbmoviedetails.hour FROM (tbmovies INNER JOIN tbmoviedetails ON tbmovies.movieID = tbmoviedetails.movieID) WHERE tbmoviedetails.rate >= ? AND YEAR(tbmoviedetails.releaseDate) BETWEEN ? AND ? ORDER BY movieID limit ? OFFSET ?;",[param.rate,param.start,param.end,limit,offset],(error,result)=>{
             if(error){
                return callBack(error);
             }
             return callBack(null,result);
         });
     }else{
-        return pool.query("SELECT tbmovies.movieID,tbmoviedetails.movieDetailsID,movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.m3u8Url,tbmoviedetails.thumbnailUrl,tbmoviedetails.enUrlSRT,tbmoviedetails.khUrlSRT,tbmoviedetails.releaseDate,tbmoviedetails.overview FROM (tbmovies INNER JOIN tbmoviedetails ON tbmovies.movieID = tbmoviedetails.movieID) WHERE tbmoviedetails.rate >= ? AND YEAR(tbmoviedetails.releaseDate) BETWEEN ? AND ? ORDER BY movieID;",[param.rate,param.start,param.end,],(error,result)=>{
+        return pool.query("SELECT tbmovies.movieID,tbmoviedetails.movieDetailsID,movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.m3u8Url,tbmoviedetails.thumbnailUrl,tbmoviedetails.enUrlSRT,tbmoviedetails.khUrlSRT,tbmoviedetails.releaseDate,tbmoviedetails.overview,tbmoviedetails.hour FROM (tbmovies INNER JOIN tbmoviedetails ON tbmovies.movieID = tbmoviedetails.movieID) WHERE tbmoviedetails.rate >= ? AND YEAR(tbmoviedetails.releaseDate) BETWEEN ? AND ? ORDER BY movieID;",[param.rate,param.start,param.end,],(error,result)=>{
             if(error){
                return callBack(error);
             }
@@ -556,6 +601,7 @@ async getitems(uid,getpopular){
             getpopulars.thumbnailUrl = row['thumbnailUrl'];
             getpopulars.releaseDate = row['releaseDate'];
             getpopulars.overview = row['overview'];
+            getpopulars.hour = row['hour'];
             var movieID=row['movieID'];
        
         
@@ -581,10 +627,16 @@ async getitems(uid,getpopular){
             console.log("result"+result.length)
             let list=[];
             result.forEach(element => {
-                list.push(element['categoryName'])
+                var category={}
+                category.categoryID=element['categoryID'];
+                category.categoryName=element['categoryName']
+                list.push(category)
+                
             });
            
             getpopulars.categorys=list;
+            
+            getpopulars.recommendID=list[Math.floor(Math.random()*list.length)]['categoryID'];
         }catch(e){
             console.log("eeeee"+e)
         }

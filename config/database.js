@@ -1,11 +1,5 @@
 const {createPool} = require("mysql");
-// // const pool = createPool({
-// //     host: "remotemysql.com",
-// //     user: "uJFVT3fNHG",
-// //     password: "RDgKFaqoPg",
-// //     database: "uJFVT3fNHG",
-// //     connectionLimit: 10
-// // });
+
 const pool = createPool({
         host: "us-cdbr-east-06.cleardb.net",
         user: "bd6bf9cdcc6ea8",
@@ -13,6 +7,13 @@ const pool = createPool({
         database: "heroku_57cb13615807d7d",
         connectionLimit: 10
     });
+// const pool = createPool({
+//         host: "localhost",
+//         user: "root",
+//         password: "",
+//         database: "happymovie",
+//         connectionLimit: 10
+//     });
    
     
 module.exports = pool;
