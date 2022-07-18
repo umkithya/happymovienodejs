@@ -50,7 +50,7 @@ router.post("/popular-movies",checkToken, async(req, res, next) => {
     await favoriteMovies(req.decoded['userId'],req, res);
     
   });
-  router.get("/search-movies",checkToken, async(req, res, next) => {
+  router.post("/search-movies",checkToken, async(req, res, next) => {
     
     await searchMovies(req.decoded['userId'],req, res);
     
