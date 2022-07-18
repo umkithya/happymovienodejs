@@ -133,6 +133,27 @@ module.exports={
         }
        
     },
+    async getAlltvshow(page,callBack){
+        if(page!=0){
+            const limit = 10;
+            var pages = page;
+            var offset = (pages - 1) * limit
+            console.log("pages========"+pages)
+            return pool.query("SELECT tbtvshow.tvshowID,tbtvshowdetail.tvshowDetailsID,tbtvshow.tvshowTitle,tbtvshowdetail.quality,tbtvshowdetail.rate,tbtvshowdetail.imageUrl,tbtvshowdetail.thumbnailUrl,tbtvshowdetail.releaseDate,tbtvshowdetail.overview FROM (tbtvshow INNER JOIN tbtvshowdetail ON tbtvshow.tvshowID = tbtvshowdetail.tvshowID) ORDER BY tvshowID limit ? OFFSET ?;",[limit,offset],(error,result)=>{
+                if(error){
+                   return callBack(error);
+                }
+                return callBack(null,result);
+            });
+        }else{
+            return pool.query("SELECT tbtvshow.tvshowID,tbtvshowdetail.tvshowDetailsID,tbtvshow.tvshowTitle,tbtvshowdetail.quality,tbtvshowdetail.rate,tbtvshowdetail.imageUrl,tbtvshowdetail.thumbnailUrl,tbtvshowdetail.releaseDate,tbtvshowdetail.overview FROM (tbtvshow INNER JOIN tbtvshowdetail ON tbtvshow.tvshowID = tbtvshowdetail.tvshowID) ORDER BY tvshowID;",(error,result)=>{
+                if(error){
+                   return callBack(error);
+                }
+                return callBack(null,result);
+            });
+        }  
+    },
     async getTrendingtvshow(page,callBack){
         if(page!=0){
             const limit = 10;
