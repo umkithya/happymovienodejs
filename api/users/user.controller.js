@@ -369,8 +369,6 @@ module.exports={
     searchMovies:async(uid,req,res)=>{
         console.log('userid'+uid);
         const body=req.body;
-         
-        console.log("(page)"+page);
         await getMoviesBySearch(body.searchName,async(err,results)=>{
             if(err){
                         console.log(err);
@@ -378,8 +376,9 @@ module.exports={
                     }else{
                         
                         try {
-                            itemdata= await getitems(uid,results)
                             if(results.length !=0){
+                            itemdata= await getitems(uid,results)
+                            
                                 res.status(200).send({
                                     success: 1,
                                     page_number: req.query.page,
