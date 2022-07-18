@@ -1,5 +1,6 @@
 const res = require("express/lib/response");
 const {resetPassword,getOtpForgotPass,getSlideShow,getFavoriteMovies,getMovieByLanguage,getLanguageItem,getCategoryItem,getMovieByCategory,addWishlistByID,removeWishlistByMovieID,getitems,getPopular,getPopularMovies,exsting,signUp,getUserByID,getUsers,deleteUserByID,updateUser,getUserByUserName,createOtp,verifyOtp} = require("./user.service");
+const {getMoviesBySearch}= require("./user.service");
 const {genSaltSync,hashSync,compareSync}=require("bcrypt");
 
 var userid=0;
@@ -364,6 +365,45 @@ module.exports={
                });
                
         });
+    },
+    searchMovies:async(uid,req,res)=>{
+        console.log('userid'+uid);
+        const body=req.body;
+         
+        console.log("(page)"+page);
+        await getMoviesBySearch(page,body.searchName,async(err,results)=>{
+            if(err){
+                        console.log(err);
+                        return ;
+                    }else{
+                        
+                        try {
+                            itemdata= await getitems(uid,results)
+                            if(results.length !=0){
+                                res.status(200).send({
+                                    success: 1,
+                                    page_number: req.query.page,
+                                    item_count: itemdata.length,
+                                    result: itemdata
+    
+                                            });
+                            }else{
+                                res.status(200).send({
+                                    success: 1,
+                                    page_number: req.query.page,
+                                    item_count: 0,
+                                    result: []
+    
+                                            });
+                            }
+                           
+                          } catch (error) {
+                            throw error;
+                          }
+                    }
+        });
+          
+          
     },
     popularMovies:async(uid,req,res)=>{
         console.log('userid'+uid);

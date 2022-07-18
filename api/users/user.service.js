@@ -489,13 +489,23 @@ getCategoryItem: callBack=>{
          return callBack(null,result);
     });
 },
+async getMoviesBySearch(search,callBack){
+   
+        const limit = 7;
+    return pool.query('SELECT tbmovies.movieID,tbmovies.movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.thumbnailUrl,tbmoviedetails.releaseDate,tbmoviedetails.overview,tbmoviedetails.hour FROM (tbmovies INNER JOIN tbmoviedetails ON tbmoviedetails.movieID=tbmovies.movieID) WHERE LOWER(tbmovies.movieTitle) LIKE '+search+"__%"+' ORDER BY tbmovies.movieTitle limit ?;',[limit],(err,result)=>{
+        if(err){
+            return callBack(err);
+         }
+         return callBack(null,result);
+    });
+},
 async getFavoriteMovies(uid,page,callBack){
     if(page!=0){
         const limit = 10;
         var pages = page;
         var offset = (pages - 1) * limit
         console.log("pages========"+pages)
-    return pool.query('SELECT tbmovies.movieID,tbmovies.movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.thumbnailUrl,tbmoviedetails.releaseDate,tbmoviedetails.overview,tbmoviedetails.hour,tbwishlist.wishlistID FROM (((tbmovies INNER JOIN tbmoviedetails ON tbmoviedetails.movieID=tbmovies.movieID) INNER JOIN tbwishlist ON tbwishlist.movieID=tbmovies.movieID) INNER JOIN tbuser ON tbuser.userID=tbwishlist.userID) WHERE tbuser.userID=? ORDER BY tbwishlist.wishlistID limit ? OFFSET ?;',[uid,limit,offset],(err,result)=>{
+    return pool.query('SELECT tbmovies.movieID,tbmovies.movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.thumbnailUrl,tbmoviedetails.releaseDate,tbmoviedetails.overview,tbmoviedetails.hour,tbwishlist.wishlistID FROM (((tbmovies INNER JOIN tbmoviedetails ON tbmoviedetails.movieID=tbmovies.movieID) INNER JOIN tbwishlist ON tbwishlist.movieID=tbmovies.movieID) INNER JOIN tbuser ON tbuser.userID=tbwishlist.userID) WHERE tbuser.userID=? ORDER BY tbwishlist.wishlistID limit ? OFFSET ?;',[uid,limit,offset],(error,result)=>{
         if(error){
             return callBack(error);
          }
@@ -518,7 +528,7 @@ async getMovieByCategory(page,param,callBack){
         var pages = page;
         var offset = (pages - 1) * limit
         console.log("pages========"+pages)
-    return pool.query('SELECT tbmovies.movieID,movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.thumbnailUrl,tbmoviedetails.releaseDate,tbmoviedetails.overview,tbmoviedetails.hour FROM ((tbmovies INNER JOIN tbmoviedetails ON tbmoviedetails.movieID=tbmovies.movieID) INNER JOIN tbmoviecategory ON tbmoviecategory.movieID=tbmovies.movieID) WHERE tbmoviecategory.categoryID=? ORDER BY tbmovies.movieID limit ? OFFSET ?;',[param.categoryID,limit,offset],(err,result)=>{
+    return pool.query('SELECT tbmovies.movieID,movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.thumbnailUrl,tbmoviedetails.releaseDate,tbmoviedetails.overview,tbmoviedetails.hour FROM ((tbmovies INNER JOIN tbmoviedetails ON tbmoviedetails.movieID=tbmovies.movieID) INNER JOIN tbmoviecategory ON tbmoviecategory.movieID=tbmovies.movieID) WHERE tbmoviecategory.categoryID=? ORDER BY tbmovies.movieID limit ? OFFSET ?;',[param.categoryID,limit,offset],(error,result)=>{
         if(error){
             return callBack(error);
          }
@@ -541,7 +551,7 @@ async getMovieByLanguage(page,param,callBack){
         var pages = page;
         var offset = (pages - 1) * limit
         console.log("pages========"+pages)
-    return pool.query('SELECT tbmovies.movieID,movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.thumbnailUrl,tbmoviedetails.releaseDate,tbmoviedetails.overview,tbmoviedetails.hour FROM ((tbmovies INNER JOIN tbmoviedetails ON tbmoviedetails.movieID=tbmovies.movieID) INNER JOIN tbmovielanguage ON tbmovielanguage.movieID=tbmovies.movieID) WHERE tbmovielanguage.languageID=? ORDER BY tbmovies.movieID limit ? OFFSET ?;',[param.languageID,limit,offset],(err,result)=>{
+    return pool.query('SELECT tbmovies.movieID,movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.thumbnailUrl,tbmoviedetails.releaseDate,tbmoviedetails.overview,tbmoviedetails.hour FROM ((tbmovies INNER JOIN tbmoviedetails ON tbmoviedetails.movieID=tbmovies.movieID) INNER JOIN tbmovielanguage ON tbmovielanguage.movieID=tbmovies.movieID) WHERE tbmovielanguage.languageID=? ORDER BY tbmovies.movieID limit ? OFFSET ?;',[param.languageID,limit,offset],(error,result)=>{
         if(error){
             return callBack(error);
          }
