@@ -569,20 +569,20 @@ async getMovieByLanguage(page,param,callBack){
     }
 },
 
-async getTrending(page,param,callBack){
+async getTrending(page,callBack){
     if(page!=0){
         const limit = 10;
         var pages = page;
         var offset = (pages - 1) * limit
         console.log("pages========"+pages)
-        return pool.query("SELECT tbmovies.movieID,tbmoviedetails.movieDetailsID,movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.m3u8Url,tbmoviedetails.thumbnailUrl,tbmoviedetails.enUrlSRT,tbmoviedetails.khUrlSRT,tbmoviedetails.releaseDate,tbmoviedetails.overview,tbmoviedetails.hour FROM (tbmovies INNER JOIN tbmoviedetails ON tbmovies.movieID = tbmoviedetails.movieID) WHERE tbmovies.isTrending = 1 ORDER BY movieID limit ? OFFSET ?;",[param.rate,limit,offset],(error,result)=>{
+        return pool.query("SELECT tbmovies.movieID,tbmoviedetails.movieDetailsID,movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.m3u8Url,tbmoviedetails.thumbnailUrl,tbmoviedetails.enUrlSRT,tbmoviedetails.khUrlSRT,tbmoviedetails.releaseDate,tbmoviedetails.overview,tbmoviedetails.hour FROM (tbmovies INNER JOIN tbmoviedetails ON tbmovies.movieID = tbmoviedetails.movieID) WHERE tbmovies.isTrending = 1 ORDER BY movieID limit ? OFFSET ?;",[limit,offset],(error,result)=>{
             if(error){
                return callBack(error);
             }
             return callBack(null,result);
         });
     }else{
-        return pool.query("SELECT tbmovies.movieID,tbmoviedetails.movieDetailsID,movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.m3u8Url,tbmoviedetails.thumbnailUrl,tbmoviedetails.enUrlSRT,tbmoviedetails.khUrlSRT,tbmoviedetails.releaseDate,tbmoviedetails.overview,tbmoviedetails.hour FROM (tbmovies INNER JOIN tbmoviedetails ON tbmovies.movieID = tbmoviedetails.movieID) WHERE tbmovies.isTrending = 1 ORDER BY movieID;",[param.rate],(error,result)=>{
+        return pool.query("SELECT tbmovies.movieID,tbmoviedetails.movieDetailsID,movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.m3u8Url,tbmoviedetails.thumbnailUrl,tbmoviedetails.enUrlSRT,tbmoviedetails.khUrlSRT,tbmoviedetails.releaseDate,tbmoviedetails.overview,tbmoviedetails.hour FROM (tbmovies INNER JOIN tbmoviedetails ON tbmovies.movieID = tbmoviedetails.movieID) WHERE tbmovies.isTrending = 1 ORDER BY movieID;",(error,result)=>{
             if(error){
                return callBack(error);
             }
