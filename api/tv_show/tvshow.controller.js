@@ -2,7 +2,7 @@ const res = require("express/lib/response");
 
 // var userid=0;
 // const jwt=require("jsonwebtoken");
-const {getAlltvshow,getTvShowItems,getTrendingtvshow,getTvShowDetail,getTvShowItemDetail} = require("./tvshow.service");
+const {getTvshowBySearch,getAlltvshow,getTvShowItems,getTrendingtvshow,getTvShowDetail,getTvShowItemDetail} = require("./tvshow.service");
 module.exports={
     tvshowDetail:async(req,res)=>{
         var body=req.body;
@@ -86,6 +86,42 @@ module.exports={
                         try {
                             itemdata= await getTvShowItems(uid,results)
                             if(results.length !=0){
+                                res.status(200).send({
+                                    success: 1,
+                                    page_number: req.query.page,
+                                    item_count: itemdata.length,
+                                    result: itemdata
+    
+                                            });
+                            }else{
+                                res.status(200).send({
+                                    success: 1,
+                                    page_number: req.query.page,
+                                    item_count: 0,
+                                    result: []
+    
+                                            });
+                            }
+                           
+                          } catch (error) {
+                            throw error;
+                          }
+                    }
+        });
+    },
+    searchTvshow:async(uid,req,res)=>{
+        console.log('userid'+uid);
+        const body=req.body;
+        await getTvshowBySearch(body.searchName,async(err,results)=>{
+            if(err){
+                        console.log(err);
+                        return ;
+                    }else{
+                        
+                        try {
+                            if(results.length !=0){
+                            itemdata= await getTvShowItems(uid,results)
+                           
                                 res.status(200).send({
                                     success: 1,
                                     page_number: req.query.page,

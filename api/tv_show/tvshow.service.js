@@ -63,6 +63,16 @@ async function getCategory(tvshowID){
 }
 
 module.exports={
+    async getTvshowBySearch(search,callBack){
+   
+        const limit = 7;
+    return pool.query("SELECT tbtvshow.tvshowID,tbtvshowdetail.tvshowDetailsID,tbtvshow.tvshowTitle,tbtvshowdetail.quality,tbtvshowdetail.rate,tbtvshowdetail.imageUrl,tbtvshowdetail.thumbnailUrl,tbtvshowdetail.releaseDate,tbtvshowdetail.overview FROM (tbtvshow INNER JOIN tbtvshowdetail ON tbtvshow.tvshowID = tbtvshowdetail.tvshowID) WHERE LOWER(tbtvshow.tvshowTitle) LIKE '"+search+"__%' ORDER BY tbtvshow.tvshowTitle limit ?;",[limit],(err,result)=>{
+        if(err){
+            return callBack(err);
+         }
+         return callBack(null,result);
+    });
+    },
     async getTvShowDetail(tvshowID,callBack){
         
             return pool.query("SELECT `tvshowID`, `tvshowTitle` FROM `tbtvshow` WHERE tvshowID=?",[tvshowID],(error,result)=>{

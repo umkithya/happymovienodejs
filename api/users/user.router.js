@@ -2,7 +2,7 @@
 const router = require("express").Router();
 const {searchMovies,createNewPassword,sendOtpForgotPass,fetchSlideShow,favoriteMovies,languageMovies,languageItems,categoryItems,categoryMovies,addWishlist,removeWishlist,popularMovies,isExisting,signUpUser,getUsers,updateUser,deleteUserByID, login,getOtp,verifyOTP} = require("./user.controller");
 const { checkToken } = require("../../auth/token_validation");
-const {allTvShow,trendingTvShow,tvshowDetail}= require("../tv_show/tvshow.controller");
+const {searchTvshow,allTvShow,trendingTvShow,tvshowDetail}= require("../tv_show/tvshow.controller");
 var userid =require("./user.controller");
 
 // router.post("/",checkToken,createUser);
@@ -64,6 +64,11 @@ router.post("/popular-movies",checkToken, async(req, res, next) => {
  router.get("/trending-tvshows",checkToken, async(req, res, next) => {
     
   await trendingTvShow(req.decoded['userId'],req, res);
+  
+});
+router.post("/search-tvshows",checkToken, async(req, res, next) => {
+    
+  await searchTvshow(req.decoded['userId'],req, res);
   
 });
 router.post("/tvshow-detail",checkToken,tvshowDetail);
