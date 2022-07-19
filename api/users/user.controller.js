@@ -1,6 +1,6 @@
 const res = require("express/lib/response");
 const {resetPassword,getOtpForgotPass,getSlideShow,getFavoriteMovies,getMovieByLanguage,getLanguageItem,getCategoryItem,getMovieByCategory,addWishlistByID,removeWishlistByMovieID,getitems,getPopular,getPopularMovies,exsting,signUp,getUserByID,getUsers,deleteUserByID,updateUser,getUserByUserName,createOtp,verifyOtp} = require("./user.service");
-const {getMoviesBySearch}= require("./user.service");
+const {getTrending,getTopRate,getMoviesBySearch}= require("./user.service");
 const {genSaltSync,hashSync,compareSync}=require("bcrypt");
 
 var userid=0;
@@ -474,6 +474,87 @@ module.exports={
                 success:1,
                 data: results,
             });
+        });
+    },
+    getTopRateMovie:async(uid,req,res)=>{
+        console.log('userid'+uid);
+        const body=req.body;
+         page=req.query.page;
+        if(page==undefined){
+            page=0;
+        }
+        console.log("(page)"+page);
+        await getTopRate(uid,page,async(err,results)=>{
+            if(err){
+                        console.log(err);
+                        return ;
+                    }else{
+                        
+                        try {
+                            itemdata= await getitems(uid,results)
+                            if(results.length !=0){
+                                res.status(200).send({
+                                    success: 1,
+                                    page_number: req.query.page,
+                                    item_count: itemdata.length,
+                                    result: itemdata
+    
+                                            });
+                            }else{
+                                res.status(200).send({
+                                    success: 1,
+                                    page_number: req.query.page,
+                                    item_count: 0,
+                                    result: []
+    
+                                            });
+                            }
+                           
+                          } catch (error) {
+                            throw error;
+                          }
+                    }
+        });
+    },
+    getTrendingMovie:async(uid,req,res)=>{
+        console.log('userid'+uid);
+        const body=req.body;
+         page=req.query.page;
+        if(page==undefined){
+            page=0;
+        }
+        console.log("(page)"+page);
+        await getTrending(uid,page,async(err,results)=>{
+            if(err){
+                        console.log(err);
+                        return ;
+                    }else{
+                        
+                        try {
+                            if(results.length !=0){
+                            itemdata= await getitems(uid,results)
+                            
+                                res.status(200).send({
+                                    success: 1,
+                                    page_number: req.query.page,
+                                    item_count: itemdata.length,
+                                    result: itemdata
+    
+                                            });
+                            }else{
+                                res.status(200).send({
+                                    success: 1,
+                                    page_number: req.query.page,
+                                    item_count: 0,
+                                    result: []
+    
+                                            });
+                            }
+                           
+                          } catch (error) {
+                            throw error;
+                          }
+                    }
         });
     },
     favoriteMovies:async(uid,req,res)=>{
