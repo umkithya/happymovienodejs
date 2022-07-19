@@ -1,7 +1,7 @@
 
 const router = require("express").Router();
-const {getTrendingMovie,searchMovies,createNewPassword,sendOtpForgotPass,fetchSlideShow,favoriteMovies,languageMovies,languageItems,categoryItems,categoryMovies,addWishlist,removeWishlist,popularMovies,isExisting,signUpUser,getUsers,updateUser,deleteUserByID, login,getOtp,verifyOTP} = require("./user.controller");
-const { checkToken } = require("../../auth/token_validation");
+const {getTopRateMovie,getTrendingMovie,searchMovies,createNewPassword,sendOtpForgotPass,fetchSlideShow,favoriteMovies,languageMovies,languageItems,categoryItems,categoryMovies,addWishlist,removeWishlist,popularMovies,isExisting,signUpUser,getUsers,updateUser,deleteUserByID, login,getOtp,verifyOTP} = require("./user.controller");
+const {checkToken } = require("../../auth/token_validation");
 const {searchTvshow,allTvShow,trendingTvShow,tvshowDetail}= require("../tv_show/tvshow.controller");
 var userid =require("./user.controller");
 
@@ -58,6 +58,11 @@ router.post("/popular-movies",checkToken, async(req, res, next) => {
   router.get("/trending-movies",checkToken, async(req, res, next) => {
     
     await getTrendingMovie(req.decoded['userId'],req, res);
+    
+  });
+  router.get("/top-rate",checkToken, async(req, res, next) => {
+    
+    await getTopRateMovie(req.decoded['userId'],req, res);
     
   });
  //TV show Block 
