@@ -1,5 +1,6 @@
 
 var pool = require("../../config/database");
+const { getFavoriteMovies } = require("../users/user.service");
 
 async function filterWishListByTvShowID(userID,tvshowID){
     return new Promise(function(resolve, reject) {
@@ -142,6 +143,27 @@ module.exports={
             return null;
         }
        
+    },
+    async getFavoriteTvshow(page,callBack){
+        if(page!=0){
+            const limit = 10;
+            var pages = page;
+            var offset = (pages - 1) * limit
+            console.log("pages========"+pages)
+            return pool.query("SELECT tbtvshow.tvshowID,tbtvshowdetail.tvshowDetailsID,tbtvshow.tvshowTitle,tbtvshowdetail.quality,tbtvshowdetail.rate,tbtvshowdetail.imageUrl,tbtvshowdetail.thumbnailUrl,tbtvshowdetail.releaseDate,tbtvshowdetail.overview FROM (((tbtvshow INNER JOIN tbtvshowdetail ON tbtvshowdetail.tvshowID=tbtvshow.tvshowID) INNER JOIN tbtvshowwishlist ON tbtvshowwishlist.tvshowID=tbtvshow.tvshowID) INNER JOIN tbuser ON tbuser.userID=tbtvshowwishlist.userID) WHERE tbuser.userID=? ORDER BY tbtvshowwishlist.wishlistID limit ? OFFSET ?;",[limit,offset],(error,result)=>{
+                if(error){
+                   return callBack(error);
+                }
+                return callBack(null,result);
+            });
+        }else{
+            return pool.query("SELECT tbtvshow.tvshowID,tbtvshowdetail.tvshowDetailsID,tbtvshow.tvshowTitle,tbtvshowdetail.quality,tbtvshowdetail.rate,tbtvshowdetail.imageUrl,tbtvshowdetail.thumbnailUrl,tbtvshowdetail.releaseDate,tbtvshowdetail.overview FROM (((tbtvshow INNER JOIN tbtvshowdetail ON tbtvshowdetail.tvshowID=tbtvshow.tvshowID) INNER JOIN tbtvshowwishlist ON tbtvshowwishlist.tvshowID=tbtvshow.tvshowID) INNER JOIN tbuser ON tbuser.userID=tbtvshowwishlist.userID) WHERE tbuser.userID=? ORDER BY tbtvshowwishlist.wishlistID limit ? OFFSET ?;",(error,result)=>{
+                if(error){
+                   return callBack(error);
+                }
+                return callBack(null,result);
+            });
+        }  
     },
     async getAlltvshow(page,callBack){
         if(page!=0){

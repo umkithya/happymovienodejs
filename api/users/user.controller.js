@@ -484,7 +484,7 @@ module.exports={
             page=0;
         }
         console.log("(page)"+page);
-        await getTopRate(uid,page,async(err,results)=>{
+        await getTopRate(page,async(err,results)=>{
             if(err){
                         console.log(err);
                         return ;
