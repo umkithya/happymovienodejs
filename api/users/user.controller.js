@@ -524,7 +524,7 @@ module.exports={
             page=0;
         }
         console.log("(page)"+page);
-        await getTrending(uid,page,async(err,results)=>{
+        await getTrending(page,async(err,results)=>{
             if(err){
                         console.log(err);
                         return ;
