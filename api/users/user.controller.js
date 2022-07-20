@@ -605,6 +605,15 @@ module.exports={
             page=0;
         }
         console.log('categoryMovies page='+page);
+        if(body.categoryID==undefined){
+            res.status(404).send({
+                success: 0,
+                message: 'Your categoryID is undefined'
+
+                        });
+                        return ;
+                        
+        }
         await getMovieByCategory(page,body,async(err,results)=>{
             if(err){
                         console.log(err);
@@ -612,9 +621,9 @@ module.exports={
                     }else{
                         
                         try {
-                            if(results.length !=0){
+                            
                             itemdata= await getitems(uid,results)
-                           
+                            if(results.length !=0){
                                 res.status(200).send({
                                     success: 1,
                                     page_number: req.query.page,
@@ -646,6 +655,15 @@ module.exports={
             page=0;
         }
         console.log("(page)"+page);
+        if(body.languageID==undefined){
+            res.status(404).send({
+                success: 0,
+                message: 'Your languageID is undefined'
+
+                        });
+                        return ;
+                        
+        }
         await getMovieByLanguage(page,body,async(err,results)=>{
             if(err){
                         console.log(err);
