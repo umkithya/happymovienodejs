@@ -612,12 +612,13 @@ module.exports={
                     }else{
                         
                         try {
-                            itemdata= await getitems(uid,results)
                             if(results.length !=0){
+                            itemdata= await getitems(uid,results)
+                           
                                 res.status(200).send({
                                     success: 1,
                                     page_number: req.query.page,
-                                    item_count: itemdata.length,
+                                    item_count: results.length,
                                     result: itemdata
     
                                             });
