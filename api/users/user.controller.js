@@ -604,7 +604,7 @@ module.exports={
         if(page==undefined){
             page=0;
         }
-        console.log("(page)"+page);
+        console.log('categoryMovies page='+page);
         await getMovieByCategory(page,body,async(err,results)=>{
             if(err){
                         console.log(err);
