@@ -5,7 +5,7 @@ const pool = createPool({
         user: "bd6bf9cdcc6ea8",
         password: "75a29b38",
         database: "heroku_57cb13615807d7d",
-        connectionLimit: 10
+        connectionLimit: 100
     });
 // const pool = createPool({
 //         host: "localhost",
