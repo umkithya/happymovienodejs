@@ -22,6 +22,13 @@ module.exports={
     
                                 });
                            
+                            }else{
+                                res.status(200).send({
+                                    success: 1,
+                                    result: []
+                                    
+    
+                                });
                             }
                           } catch (error) {
                             throw error;
