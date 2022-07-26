@@ -492,7 +492,9 @@ module.exports={
                 return ;
             }
             console.log(results[0].count);
+            totalPage=Math.ceil(results[0].count);
         });
+
         console.log("(totalPage)"+totalPage);
         
         await getTopRate(page,async(err,results)=>{
