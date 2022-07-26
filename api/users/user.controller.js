@@ -491,7 +491,7 @@ module.exports={
                 
                 return ;
             }
-            totalPage=results['count'];
+            console.log(results['count']);
         });
         console.log("(totalPage)"+totalPage);
         
