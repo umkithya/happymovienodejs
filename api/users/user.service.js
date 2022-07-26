@@ -591,7 +591,7 @@ async getTrending(page,callBack){
         });
     }  
 },
-async countTopRate(){
+async countTopRate(callBack){
     return pool.query("SELECT COUNT(*) AS count FROM (tbmovies INNER JOIN tbmoviedetails ON tbmovies.movieID = tbmoviedetails.movieID) WHERE tbmoviedetails.rate >= 8 ORDER BY tbmovies.movieID;",(error,result)=>{
             if(error){
                return callBack(error);
