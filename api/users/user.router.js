@@ -1,8 +1,9 @@
 
 const router = require("express").Router();
 const {getTopRateMovie,getTrendingMovie,searchMovies,createNewPassword,sendOtpForgotPass,fetchSlideShow,favoriteMovies,languageMovies,languageItems,categoryItems,categoryMovies,addWishlist,removeWishlist,popularMovies,isExisting,signUpUser,getUsers,updateUser,deleteUserByID, login,getOtp,verifyOTP} = require("./user.controller");
-const {checkToken } = require("../../auth/token_validation");
+const {checkToken,checkAdminToken } = require("../../auth/token_validation");
 const {fetchTvshowByCategory,fetchTvshowByLanguage,fetchFavoriteTvshow,searchTvshow,allTvShow,trendingTvShow,tvshowDetail}= require("../tv_show/tvshow.controller");
+const {adminLogin,doInsertAdmin} = require("./user.controller");
 var userid =require("./user.controller");
 
 // router.post("/",checkToken,createUser);
@@ -13,6 +14,8 @@ router.post("/login",login);
 router.post("/getotp",getOtp);
 router.post("/verify",verifyOTP);
 router.post("/signup",signUpUser);
+router.post("/insert-admin",doInsertAdmin);
+router.post("/login-admin",adminLogin);
 router.post("/existing",isExisting);
 router.get("/languages",languageItems);
 router.get("/categorys",categoryItems);

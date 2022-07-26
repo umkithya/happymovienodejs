@@ -137,8 +137,8 @@ module.exports={
         }
         );
     }, 
- signUp:(data,callBack)=>{
-     pool.query('INSERT INTO tbuser(username, password) VALUES (?,?)',[
+ insertAdmin:(data,callBack)=>{
+     pool.query('INSERT INTO tbadmin(adminName, adminPassword) VALUES (?,?)',[
          data.username,
          data.password,
      ],
@@ -201,6 +201,18 @@ deleteUserByID:(userID,callBack) =>{
     pool.query(
         'DELETE FROM `tbuser` WHERE userID=?',
         [userID],
+       (error,result ,fields)=>{
+           if(error){
+              return callBack(error);
+           }
+           return callBack(null,result[0]);
+       }
+    );
+},
+getAdminByName:(username,callBack) =>{
+    pool.query(
+        'SELECT * FROM tbadmin WHERE adminName=?',
+        [username],
        (error,result ,fields)=>{
            if(error){
               return callBack(error);

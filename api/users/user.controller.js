@@ -1,6 +1,6 @@
 const res = require("express/lib/response");
-const {resetPassword,getOtpForgotPass,getSlideShow,getFavoriteMovies,getMovieByLanguage,getLanguageItem,getCategoryItem,getMovieByCategory,addWishlistByID,removeWishlistByMovieID,getitems,getPopular,getPopularMovies,exsting,signUp,getUserByID,getUsers,deleteUserByID,updateUser,getUserByUserName,createOtp,verifyOtp} = require("./user.service");
-const {countFavoriteMovies,countMovieByCategory,countMovieByLanguage,countTrending,countTopRate,getTrending,getTopRate,getMoviesBySearch}= require("./user.service");
+const {getAdminByName,resetPassword,getOtpForgotPass,getSlideShow,getFavoriteMovies,getMovieByLanguage,getLanguageItem,getCategoryItem,getMovieByCategory,addWishlistByID,removeWishlistByMovieID,getitems,getPopular,getPopularMovies,exsting,signUp,getUserByID,getUsers,deleteUserByID,updateUser,getUserByUserName,createOtp,verifyOtp} = require("./user.service");
+const {insertAdmin,countFavoriteMovies,countMovieByCategory,countMovieByLanguage,countTrending,countTopRate,getTrending,getTopRate,getMoviesBySearch}= require("./user.service");
 const {genSaltSync,hashSync,compareSync}=require("bcrypt");
 
 var userid=0;
@@ -198,6 +198,87 @@ module.exports={
             });
             }
             
+        });
+    },
+    adminLogin:(req,res)=>{
+        const body=req.body;
+
+        getAdminByName(body.username,(err,results)=>{
+            if(err){
+                console.log(err);
+               return ;
+            }
+            if(!results){
+                return res.status(401).json({
+                    success: 0,
+                    message: 'Invalid email or password'
+            });
+            }
+            
+            const isCorrect=compareSync(body.password,results.adminPassword);
+            if(isCorrect){
+                results.password=undefined;
+                // const jsontoken= jwt({result: results},"qwe1234");
+                console.log('result.username'+results.adminName);
+                console.log('result.userId'+results.adminID);
+                const jsontoken = jwt.sign({
+                    username: results.adminName,
+                    userId: results.adminID  
+                  },
+                  'ADMINSECRETKEY', {
+                    expiresIn: '1d'
+                  }
+                );
+                return res.json({
+                    success:1,
+                    message: 'login successfully',
+                    token: jsontoken,
+                });
+                
+            }else{
+                return res.status(401).json({
+                    success: 0,
+                    message: 'Invalid email or password'
+            });
+            }
+            
+        });
+    },
+    doInsertAdmin:(req,res)=>{
+        const body=req.body;
+        const salt=genSaltSync(10);
+        body.password=hashSync(body.password,salt);
+        insertAdmin(body,async (err,results)=>{
+            if(err){
+                console.log(err);
+                return res.status(404).json({
+                        success: 0,
+                        message: err,
+                });
+            }
+            await getAdminByName(body.username,(err,results)=>{
+                if(!results){
+                    return res.status(401).json({
+                        success: 0,
+                        message: 'Invalid username'
+                });
+                }
+                    const jsontoken = jwt.sign({
+                        username: results.adminName,
+                        userId: results.adminID  
+                      },
+                      'ADMINSECRETKEY', {
+                        expiresIn: '1d'
+                      }
+                    );
+                    return res.json({
+                        success:1,
+                        message: 'your account has been created successful',
+                        token: jsontoken,
+                    }); 
+                
+            })
+                        
         });
     },
     signUpUser:(req,res)=>{
