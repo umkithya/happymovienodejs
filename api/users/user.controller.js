@@ -488,10 +488,10 @@ module.exports={
         await countTopRate(async(err,results)=>{
             if(err){
                 console.log(err);
-                console.log("(countTopRateError)"+err);
+                
                 return ;
             }
-            totalPage=results.length;
+            totalPage=results['count'];
         });
         console.log("(totalPage)"+totalPage);
         
