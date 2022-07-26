@@ -545,6 +545,7 @@ async getMovieByCategory(page,param,callBack){
         });
     }
 },
+
 async getMovieByLanguage(page,param,callBack){
     if(page!=0){
         const limit = 10;
@@ -590,6 +591,14 @@ async getTrending(page,callBack){
         });
     }  
 },
+async countTopRate(){
+    return pool.query("SELECT COUNT(*) FROM (tbmovies INNER JOIN tbmoviedetails ON tbmovies.movieID = tbmoviedetails.movieID) WHERE tbmoviedetails.rate >= 8 ORDER BY movieID;",(error,result)=>{
+            if(error){
+               return callBack(error);
+            }
+            return callBack(null,result);
+        });
+},
 async getTopRate(page,callBack){
     if(page!=0){
         const limit = 10;
@@ -603,6 +612,7 @@ async getTopRate(page,callBack){
             return callBack(null,result);
         });
     }else{
+        
         return pool.query("SELECT tbmovies.movieID,tbmoviedetails.movieDetailsID,movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.m3u8Url,tbmoviedetails.thumbnailUrl,tbmoviedetails.enUrlSRT,tbmoviedetails.khUrlSRT,tbmoviedetails.releaseDate,tbmoviedetails.overview,tbmoviedetails.hour FROM (tbmovies INNER JOIN tbmoviedetails ON tbmovies.movieID = tbmoviedetails.movieID) WHERE tbmoviedetails.rate >= 8 ORDER BY movieID;",(error,result)=>{
             if(error){
                return callBack(error);

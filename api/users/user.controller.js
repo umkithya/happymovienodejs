@@ -1,6 +1,6 @@
 const res = require("express/lib/response");
 const {resetPassword,getOtpForgotPass,getSlideShow,getFavoriteMovies,getMovieByLanguage,getLanguageItem,getCategoryItem,getMovieByCategory,addWishlistByID,removeWishlistByMovieID,getitems,getPopular,getPopularMovies,exsting,signUp,getUserByID,getUsers,deleteUserByID,updateUser,getUserByUserName,createOtp,verifyOtp} = require("./user.service");
-const {getTrending,getTopRate,getMoviesBySearch}= require("./user.service");
+const {countTopRate,getTrending,getTopRate,getMoviesBySearch}= require("./user.service");
 const {genSaltSync,hashSync,compareSync}=require("bcrypt");
 
 var userid=0;
@@ -484,6 +484,14 @@ module.exports={
             page=0;
         }
         console.log("(page)"+page);
+        var totalPage=0;
+        await countTopRate(async(err,results)=>{
+            if(err){
+                console.log(err);
+                return ;
+            }
+            totalPage=results.length;
+        });
         await getTopRate(page,async(err,results)=>{
             if(err){
                         console.log(err);
@@ -496,6 +504,7 @@ module.exports={
                                 res.status(200).send({
                                     success: 1,
                                     page_number: req.query.page,
+                                    total_page: totalPage,
                                     item_count: itemdata.length,
                                     result: itemdata
     
@@ -504,6 +513,7 @@ module.exports={
                                 res.status(200).send({
                                     success: 1,
                                     page_number: req.query.page,
+                                    total_page: 0,
                                     item_count: 0,
                                     result: []
     
