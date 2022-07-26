@@ -2,7 +2,7 @@
 const router = require("express").Router();
 const {getTopRateMovie,getTrendingMovie,searchMovies,createNewPassword,sendOtpForgotPass,fetchSlideShow,favoriteMovies,languageMovies,languageItems,categoryItems,categoryMovies,addWishlist,removeWishlist,popularMovies,isExisting,signUpUser,getUsers,updateUser,deleteUserByID, login,getOtp,verifyOTP} = require("./user.controller");
 const {checkToken } = require("../../auth/token_validation");
-const {fetchFavoriteTvshow,searchTvshow,allTvShow,trendingTvShow,tvshowDetail}= require("../tv_show/tvshow.controller");
+const {fetchTvshowByCategory,fetchTvshowByLanguage,fetchFavoriteTvshow,searchTvshow,allTvShow,trendingTvShow,tvshowDetail}= require("../tv_show/tvshow.controller");
 var userid =require("./user.controller");
 
 // router.post("/",checkToken,createUser);
@@ -85,6 +85,16 @@ router.post("/popular-movies",checkToken, async(req, res, next) => {
 router.post("/search-tvshows",checkToken, async(req, res, next) => {
     
   await searchTvshow(req.decoded['userId'],req, res);
+  
+});
+router.post("/language-tvshows",checkToken, async(req, res, next) => {
+    
+  await fetchTvshowByLanguage(req.decoded['userId'],req, res);
+  
+});
+router.post("/category-tvshows",checkToken, async(req, res, next) => {
+    
+  await fetchTvshowByCategory(req.decoded['userId'],req, res);
   
 });
 router.post("/tvshow-detail",checkToken,tvshowDetail);

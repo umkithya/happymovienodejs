@@ -518,7 +518,7 @@ module.exports={
                                 res.status(200).send({
                                     success: 1,
                                     page_number: req.query.page,
-                                    total_page: 0,
+                                    total_page: totalPage,
                                     item_count: 0,
                                     result: []
     
@@ -575,7 +575,7 @@ module.exports={
                                 res.status(200).send({
                                     success: 1,
                                     page_number: req.query.page,
-                                    total_page: 0,
+                                    total_page: totalPage,
                                     item_count: 0,
                                     result: []
     
@@ -629,7 +629,7 @@ module.exports={
                                 res.status(200).send({
                                     success: 1,
                                     page_number: req.query.page,
-                                    total_page: 0,
+                                    total_page: totalPage,
                                     item_count: 0,
                                     result: []
     
@@ -695,7 +695,7 @@ module.exports={
                                 res.status(200).send({
                                     success: 1,
                                     page_number: req.query.page,
-                                    total_page: 0,
+                                    total_page: totalPage,
                                     item_count: 0,
                                     result: []
     
@@ -759,7 +759,7 @@ module.exports={
                                 res.status(200).send({
                                     success: 1,
                                     page_number: req.query.page,
-                                    total_page: 0,
+                                    total_page: totalPage,
                                     item_count: 0,
                                     result: []
     

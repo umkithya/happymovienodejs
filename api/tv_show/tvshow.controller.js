@@ -2,8 +2,8 @@ const res = require("express/lib/response");
 
 // var userid=0;
 // const jwt=require("jsonwebtoken");
-const {getFavoriteTvshow,getTvshowBySearch,getAlltvshow,getTvShowItems,getTrendingtvshow,getTvShowDetail,getTvShowItemDetail} = require("./tvshow.service");
-const {countAlltvshow,countFavoriteTvshow,countTrendingtvshow} = require("./tvshow.service");
+const {getTvshowByLanguage,getTvshowByCategory,getFavoriteTvshow,getTvshowBySearch,getAlltvshow,getTvShowItems,getTrendingtvshow,getTvShowDetail,getTvShowItemDetail} = require("./tvshow.service");
+const {countTvshowByLanguage,countTvshowByCategory,countAlltvshow,countFavoriteTvshow,countTrendingtvshow} = require("./tvshow.service");
 module.exports={
     tvshowDetail:async(req,res)=>{
         var body=req.body;
@@ -78,7 +78,7 @@ module.exports={
                                 res.status(200).send({
                                     success: 1,
                                     page_number: req.query.page,
-                                    total_page: 0,
+                                    total_page: totalPage,
                                     item_count: 0,
                                     result: []
     
@@ -134,7 +134,7 @@ module.exports={
                                 res.status(200).send({
                                     success: 1,
                                     page_number: req.query.page,
-                                    total_page: 0,
+                                    total_page: totalPage,
                                     item_count: 0,
                                     result: []
     
@@ -188,7 +188,115 @@ module.exports={
                                 res.status(200).send({
                                     success: 1,
                                     page_number: req.query.page,
-                                    total_page:0,
+                                    total_page: totalPage,
+                                    item_count: 0,
+                                    result: []
+    
+                                            });
+                            }
+                           
+                          } catch (error) {
+                            throw error;
+                          }
+                    }
+        });
+    },
+    fetchTvshowByCategory:async(uid,req,res)=>{
+        console.log('userid'+uid);
+        const body=req.body;
+         page=req.query.page;
+        if(page==undefined){
+            page=0;
+        }
+        console.log("(page)"+page);
+        var totalPage=0;
+        await countTvshowByCategory(body,async(err,results)=>{
+            if(err){
+                console.log(err);
+                
+                return ;
+            }
+            console.log(results[0].count);
+            totalPage=Math.ceil((results[0].count/10));
+        });
+
+        console.log("(totalPage)"+totalPage);
+        await getTvshowByCategory(body,page,async(err,results)=>{
+            if(err){
+                        console.log(err);
+                        return ;
+                    }else{
+                        
+                        try {
+                            itemdata= await getTvShowItems(uid,results)
+                            if(results.length !=0){
+                                res.status(200).send({
+                                    success: 1,
+                                    page_number: req.query.page,
+                                    total_page:totalPage,
+                                    item_count: itemdata.length,
+                                    result: itemdata
+    
+                                            });
+                            }else{
+                                res.status(200).send({
+                                    success: 1,
+                                    page_number: req.query.page,
+                                    total_page: totalPage,
+                                    item_count: 0,
+                                    result: []
+    
+                                            });
+                            }
+                           
+                          } catch (error) {
+                            throw error;
+                          }
+                    }
+        });
+    },
+    fetchTvshowByLanguage:async(uid,req,res)=>{
+        console.log('userid'+uid);
+        const body=req.body;
+         page=req.query.page;
+        if(page==undefined){
+            page=0;
+        }
+        console.log("(page)"+page);
+        var totalPage=0;
+        await countTvshowByLanguage(body,async(err,results)=>{
+            if(err){
+                console.log(err);
+                
+                return ;
+            }
+            console.log(results[0].count);
+            totalPage=Math.ceil((results[0].count/10));
+        });
+
+        console.log("(totalPage)"+totalPage);
+        await getTvshowByLanguage(body,page,async(err,results)=>{
+            if(err){
+                        console.log(err);
+                        return ;
+                    }else{
+                        
+                        try {
+                            itemdata= await getTvShowItems(uid,results)
+                            if(results.length !=0){
+                                res.status(200).send({
+                                    success: 1,
+                                    page_number: req.query.page,
+                                    total_page:totalPage,
+                                    item_count: itemdata.length,
+                                    result: itemdata
+    
+                                            });
+                            }else{
+                                res.status(200).send({
+                                    success: 1,
+                                    page_number: req.query.page,
+                                    total_page: totalPage,
                                     item_count: 0,
                                     result: []
     

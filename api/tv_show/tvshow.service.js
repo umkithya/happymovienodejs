@@ -231,6 +231,64 @@ module.exports={
             });
         }  
     },
+    async countTvshowByCategory(param,callBack){
+        return pool.query("SELECT DISTINCT COUNT(*) AS count FROM ((tbtvshow INNER JOIN tbtvshowdetail ON tbtvshowdetail.tvshowID=tbtvshow.tvshowID) INNER JOIN tbtvshowcategory ON tbtvshowcategory.tvshowID=tbtvshow.tvshowID) WHERE tbtvshowcategory.categoryID=? ORDER BY tbtvshowcategory.tvshowID;",[param.categoryID],(error,result)=>{
+                if(error){
+                   return callBack(error);
+                }
+                return callBack(null,result);
+            });
+    },
+    async getTvshowByCategory(param,page,callBack){
+        if(page!=0){
+            const limit = 10;
+            var pages = page;
+            var offset = (pages - 1) * limit
+            console.log("pages========"+pages)
+            return pool.query("SELECT DISTINCT tbtvshow.tvshowID,tbtvshowdetail.tvshowDetailsID,tbtvshow.tvshowTitle,tbtvshowdetail.quality,tbtvshowdetail.rate,tbtvshowdetail.imageUrl,tbtvshowdetail.thumbnailUrl,tbtvshowdetail.releaseDate,tbtvshowdetail.overview FROM ((tbtvshow INNER JOIN tbtvshowdetail ON tbtvshowdetail.tvshowID=tbtvshow.tvshowID) INNER JOIN tbtvshowcategory ON tbtvshowcategory.tvshowID=tbtvshow.tvshowID) WHERE tbtvshowcategory.categoryID=? ORDER BY tbtvshowcategory.tvshowID limit ? OFFSET ?;",[param.categoryID,limit,offset],(error,result)=>{
+                if(error){
+                   return callBack(error);
+                }
+                return callBack(null,result);
+            });
+        }else{
+            return pool.query("SELECT DISTINCT tbtvshow.tvshowID,tbtvshowdetail.tvshowDetailsID,tbtvshow.tvshowTitle,tbtvshowdetail.quality,tbtvshowdetail.rate,tbtvshowdetail.imageUrl,tbtvshowdetail.thumbnailUrl,tbtvshowdetail.releaseDate,tbtvshowdetail.overview FROM ((tbtvshow INNER JOIN tbtvshowdetail ON tbtvshowdetail.tvshowID=tbtvshow.tvshowID) INNER JOIN tbtvshowcategory ON tbtvshowcategory.tvshowID=tbtvshow.tvshowID) WHERE tbtvshowcategory.categoryID=? ORDER BY tbtvshowcategory.tvshowID",[param.categoryID],(error,result)=>{
+                if(error){
+                   return callBack(error);
+                }
+                return callBack(null,result);
+            });
+        }  
+    },
+    async countTvshowByLanguage(param,callBack){
+        return pool.query("SELECT DISTINCT COUNT(*) AS count FROM ((tbtvshow INNER JOIN tbtvshowdetail ON tbtvshowdetail.tvshowID=tbtvshow.tvshowID) INNER JOIN tbtvshowlanguage ON tbtvshowlanguage.tvshowID=tbtvshow.tvshowID) WHERE tbtvshowlanguage.languageID=? ORDER BY tbtvshowlanguage.tvshowID;",[param.languageID],(error,result)=>{
+                if(error){
+                   return callBack(error);
+                }
+                return callBack(null,result);
+            });
+    },
+    async getTvshowByLanguage(param,page,callBack){
+        if(page!=0){
+            const limit = 10;
+            var pages = page;
+            var offset = (pages - 1) * limit
+            console.log("pages========"+pages)
+            return pool.query("SELECT DISTINCT tbtvshow.tvshowID,tbtvshowdetail.tvshowDetailsID,tbtvshow.tvshowTitle,tbtvshowdetail.quality,tbtvshowdetail.rate,tbtvshowdetail.imageUrl,tbtvshowdetail.thumbnailUrl,tbtvshowdetail.releaseDate,tbtvshowdetail.overview FROM ((tbtvshow INNER JOIN tbtvshowdetail ON tbtvshowdetail.tvshowID=tbtvshow.tvshowID) INNER JOIN tbtvshowlanguage ON tbtvshowlanguage.tvshowID=tbtvshow.tvshowID) WHERE tbtvshowlanguage.languageID=? ORDER BY tbtvshowlanguage.tvshowID limit ? OFFSET ?;",[param.languageID,limit,offset],(error,result)=>{
+                if(error){
+                   return callBack(error);
+                }
+                return callBack(null,result);
+            });
+        }else{
+            return pool.query("SELECT DISTINCT tbtvshow.tvshowID,tbtvshowdetail.tvshowDetailsID,tbtvshow.tvshowTitle,tbtvshowdetail.quality,tbtvshowdetail.rate,tbtvshowdetail.imageUrl,tbtvshowdetail.thumbnailUrl,tbtvshowdetail.releaseDate,tbtvshowdetail.overview FROM ((tbtvshow INNER JOIN tbtvshowdetail ON tbtvshowdetail.tvshowID=tbtvshow.tvshowID) INNER JOIN tbtvshowlanguage ON tbtvshowlanguage.tvshowID=tbtvshow.tvshowID) WHERE tbtvshowlanguage.languageID=? ORDER BY tbtvshowlanguage.tvshowID",[param.languageID],(error,result)=>{
+                if(error){
+                   return callBack(error);
+                }
+                return callBack(null,result);
+            });
+        }  
+    },
     async getTvShowItems(uid,gettvshow){
         // let category = [];
         var gettvshow_tagdataset = [];
