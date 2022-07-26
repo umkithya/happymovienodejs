@@ -492,6 +492,8 @@ module.exports={
             }
             totalPage=results.length;
         });
+        console.log("(totalPage)"+totalPage);
+        
         await getTopRate(page,async(err,results)=>{
             if(err){
                         console.log(err);
