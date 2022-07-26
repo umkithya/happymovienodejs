@@ -492,7 +492,7 @@ module.exports={
                 return ;
             }
             console.log(results[0].count);
-            totalPage=Math.ceil(results[0].count);
+            totalPage=Math.ceil((results[0].count/10));
         });
 
         console.log("(totalPage)"+totalPage);
