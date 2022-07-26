@@ -3,6 +3,7 @@ const res = require("express/lib/response");
 // var userid=0;
 // const jwt=require("jsonwebtoken");
 const {getFavoriteTvshow,getTvshowBySearch,getAlltvshow,getTvShowItems,getTrendingtvshow,getTvShowDetail,getTvShowItemDetail} = require("./tvshow.service");
+const {countAlltvshow,countFavoriteTvshow,countTrendingtvshow} = require("./tvshow.service");
 module.exports={
     tvshowDetail:async(req,res)=>{
         var body=req.body;
@@ -44,6 +45,18 @@ module.exports={
             page=0;
         }
         console.log("(page)"+page);
+        var totalPage=0;
+        await countAlltvshow(async(err,results)=>{
+            if(err){
+                console.log(err);
+                
+                return ;
+            }
+            console.log(results[0].count);
+            totalPage=Math.ceil((results[0].count/10));
+        });
+
+        console.log("(totalPage)"+totalPage);
         await getAlltvshow(page,async(err,results)=>{
             if(err){
                         console.log(err);
@@ -56,6 +69,7 @@ module.exports={
                                 res.status(200).send({
                                     success: 1,
                                     page_number: req.query.page,
+                                    total_page:totalPage,
                                     item_count: itemdata.length,
                                     result: itemdata
     
@@ -64,6 +78,7 @@ module.exports={
                                 res.status(200).send({
                                     success: 1,
                                     page_number: req.query.page,
+                                    total_page: 0,
                                     item_count: 0,
                                     result: []
     
@@ -83,8 +98,21 @@ module.exports={
         if(page==undefined){
             page=0;
         }
+        
         console.log("(page)"+page);
-        await getFavoriteTvshow(page,async(err,results)=>{
+        var totalPage=0;
+        await countFavoriteTvshow(uid,async(err,results)=>{
+            if(err){
+                console.log(err);
+                
+                return ;
+            }
+            console.log(results[0].count);
+            totalPage=Math.ceil((results[0].count/10));
+        });
+
+        console.log("(totalPage)"+totalPage);
+        await getFavoriteTvshow(uid,page,async(err,results)=>{
             if(err){
                         console.log(err);
                         return ;
@@ -97,6 +125,7 @@ module.exports={
                                 res.status(200).send({
                                     success: 1,
                                     page_number: req.query.page,
+                                    total_page:totalPage,
                                     item_count: itemdata.length,
                                     result: itemdata
     
@@ -105,6 +134,7 @@ module.exports={
                                 res.status(200).send({
                                     success: 1,
                                     page_number: req.query.page,
+                                    total_page: 0,
                                     item_count: 0,
                                     result: []
     
@@ -125,6 +155,18 @@ module.exports={
             page=0;
         }
         console.log("(page)"+page);
+        var totalPage=0;
+        await countTrendingtvshow(async(err,results)=>{
+            if(err){
+                console.log(err);
+                
+                return ;
+            }
+            console.log(results[0].count);
+            totalPage=Math.ceil((results[0].count/10));
+        });
+
+        console.log("(totalPage)"+totalPage);
         await getTrendingtvshow(page,async(err,results)=>{
             if(err){
                         console.log(err);
@@ -137,6 +179,7 @@ module.exports={
                                 res.status(200).send({
                                     success: 1,
                                     page_number: req.query.page,
+                                    total_page:totalPage,
                                     item_count: itemdata.length,
                                     result: itemdata
     
@@ -145,6 +188,7 @@ module.exports={
                                 res.status(200).send({
                                     success: 1,
                                     page_number: req.query.page,
+                                    total_page:0,
                                     item_count: 0,
                                     result: []
     

@@ -489,6 +489,7 @@ getCategoryItem: callBack=>{
          return callBack(null,result);
     });
 },
+
 async getMoviesBySearch(search,callBack){
    
         const limit = 7;
@@ -498,6 +499,14 @@ async getMoviesBySearch(search,callBack){
          }
          return callBack(null,result);
     });
+},
+async countFavoriteMovies(uid,callBack){
+    return pool.query("SELECT DISTINCT COUNT(*) AS count FROM (((tbmovies INNER JOIN tbmoviedetails ON tbmoviedetails.movieID=tbmovies.movieID) INNER JOIN tbwishlist ON tbwishlist.movieID=tbmovies.movieID) INNER JOIN tbuser ON tbuser.userID=tbwishlist.userID) WHERE tbuser.userID=? ORDER BY tbwishlist.wishlistID",[uid],(error,result)=>{
+            if(error){
+               return callBack(error);
+            }
+            return callBack(null,result);
+        });
 },
 async getFavoriteMovies(uid,page,callBack){
     if(page!=0){
@@ -522,20 +531,29 @@ async getFavoriteMovies(uid,page,callBack){
         });
     }
 },
+async countMovieByCategory(param,callBack){
+    return pool.query("SELECT DISTINCT COUNT(*) AS count FROM ((tbmovies INNER JOIN tbmoviedetails ON tbmoviedetails.movieID=tbmovies.movieID) INNER JOIN tbmoviecategory ON tbmoviecategory.movieID=tbmovies.movieID) WHERE tbmoviecategory.categoryID=? ORDER BY tbmovies.movieID",[param.categoryID],(error,result)=>{
+            if(error){
+               return callBack(error);
+            }
+            return callBack(null,result);
+        });
+},
 async getMovieByCategory(page,param,callBack){
     if(page!=0){
         const limit = 10;
         var pages = page;
         var offset = (pages - 1) * limit
         console.log("pages========"+pages)
-    return pool.query('SELECT tbmovies.movieID,movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.thumbnailUrl,tbmoviedetails.releaseDate,tbmoviedetails.overview,tbmoviedetails.hour FROM ((tbmovies INNER JOIN tbmoviedetails ON tbmoviedetails.movieID=tbmovies.movieID) INNER JOIN tbmoviecategory ON tbmoviecategory.movieID=tbmovies.movieID) WHERE tbmoviecategory.categoryID=? ORDER BY tbmovies.movieID limit ? OFFSET ?;',[param.categoryID,limit,offset],(error,result)=>{
+    return pool.query('SELECT DISTINCT tbmovies.movieID,movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.thumbnailUrl,tbmoviedetails.releaseDate,tbmoviedetails.overview,tbmoviedetails.hour FROM ((tbmovies INNER JOIN tbmoviedetails ON tbmoviedetails.movieID=tbmovies.movieID) INNER JOIN tbmoviecategory ON tbmoviecategory.movieID=tbmovies.movieID) WHERE tbmoviecategory.categoryID=? ORDER BY tbmovies.movieID limit ? OFFSET ?;',[param.categoryID,limit,offset],(error,result)=>{
         if(error){
             return callBack(error);
          }
          return callBack(null,result);
-    });}else{
+    });}
+    else{
         console.log('TRUEEEEEEEEEEEEEEEEEE')
-        return pool.query('SELECT tbmovies.movieID,movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.thumbnailUrl,tbmoviedetails.releaseDate,tbmoviedetails.overview,tbmoviedetails.hour FROM ((tbmovies INNER JOIN tbmoviedetails ON tbmoviedetails.movieID=tbmovies.movieID) INNER JOIN tbmoviecategory ON tbmoviecategory.movieID=tbmovies.movieID) WHERE tbmoviecategory.categoryID=? ORDER BY tbmovies.movieID',[param.categoryID],(error,result)=>{
+        return pool.query('SELECT DISTINCT tbmovies.movieID,movieTitle,tbmoviedetails.quality,tbmoviedetails.rate,tbmoviedetails.imageUrl,tbmoviedetails.thumbnailUrl,tbmoviedetails.releaseDate,tbmoviedetails.overview,tbmoviedetails.hour FROM ((tbmovies INNER JOIN tbmoviedetails ON tbmoviedetails.movieID=tbmovies.movieID) INNER JOIN tbmoviecategory ON tbmoviecategory.movieID=tbmovies.movieID) WHERE tbmoviecategory.categoryID=? ORDER BY tbmovies.movieID',[param.categoryID],(error,result)=>{
             if(error){
                 return callBack(error);
              }
@@ -545,7 +563,14 @@ async getMovieByCategory(page,param,callBack){
         });
     }
 },
-
+async countMovieByLanguage(param,callBack){
+    return pool.query("SELECT DISTINCT COUNT(*) AS count FROM ((tbmovies INNER JOIN tbmoviedetails ON tbmoviedetails.movieID=tbmovies.movieID) INNER JOIN tbmovielanguage ON tbmovielanguage.movieID=tbmovies.movieID) WHERE tbmovielanguage.languageID=? ORDER BY tbmovies.movieID;",[param.languageID],(error,result)=>{
+            if(error){
+               return callBack(error);
+            }
+            return callBack(null,result);
+        });
+},
 async getMovieByLanguage(page,param,callBack){
     if(page!=0){
         const limit = 10;
@@ -569,7 +594,14 @@ async getMovieByLanguage(page,param,callBack){
         });
     }
 },
-
+async countTrending(callBack){
+    return pool.query("SELECT COUNT(*) AS count FROM (tbmovies INNER JOIN tbmoviedetails ON tbmovies.movieID = tbmoviedetails.movieID) WHERE tbmovies.isTrending = 1 ORDER BY tbmovies.movieID;",(error,result)=>{
+            if(error){
+               return callBack(error);
+            }
+            return callBack(null,result);
+        });
+},
 async getTrending(page,callBack){
     if(page!=0){
         const limit = 10;

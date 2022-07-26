@@ -1,6 +1,6 @@
 const res = require("express/lib/response");
 const {resetPassword,getOtpForgotPass,getSlideShow,getFavoriteMovies,getMovieByLanguage,getLanguageItem,getCategoryItem,getMovieByCategory,addWishlistByID,removeWishlistByMovieID,getitems,getPopular,getPopularMovies,exsting,signUp,getUserByID,getUsers,deleteUserByID,updateUser,getUserByUserName,createOtp,verifyOtp} = require("./user.service");
-const {countTopRate,getTrending,getTopRate,getMoviesBySearch}= require("./user.service");
+const {countFavoriteMovies,countMovieByCategory,countMovieByLanguage,countTrending,countTopRate,getTrending,getTopRate,getMoviesBySearch}= require("./user.service");
 const {genSaltSync,hashSync,compareSync}=require("bcrypt");
 
 var userid=0;
@@ -539,6 +539,20 @@ module.exports={
             page=0;
         }
         console.log("(page)"+page);
+        var totalPage=0;
+        await countTrending(async(err,results)=>{
+            if(err){
+                console.log(err);
+                
+                return ;
+            }
+            console.log(results[0].count);
+            totalPage=Math.ceil((results[0].count/10));
+        });
+
+        console.log("(totalPage)"+totalPage);
+        
+        console.log("(page)"+page);
         await getTrending(page,async(err,results)=>{
             if(err){
                         console.log(err);
@@ -552,6 +566,7 @@ module.exports={
                                 res.status(200).send({
                                     success: 1,
                                     page_number: req.query.page,
+                                    total_page: totalPage,
                                     item_count: itemdata.length,
                                     result: itemdata
     
@@ -560,6 +575,7 @@ module.exports={
                                 res.status(200).send({
                                     success: 1,
                                     page_number: req.query.page,
+                                    total_page: 0,
                                     item_count: 0,
                                     result: []
     
@@ -579,7 +595,18 @@ module.exports={
         if(page==undefined){
             page=0;
         }
+        var totalPage=0
         console.log("(page)"+page);
+        await countFavoriteMovies(uid,async(err,results)=>{
+            if(err){
+                console.log(err);
+                
+                return ;
+            }
+            console.log(results[0].count);
+            totalPage=Math.ceil((results[0].count/10));
+        });
+        console.log("(totalPage)"+totalPage);
         await getFavoriteMovies(uid,page,async(err,results)=>{
             if(err){
                         console.log(err);
@@ -592,7 +619,9 @@ module.exports={
                                 res.status(200).send({
                                     success: 1,
                                     page_number: req.query.page,
+                                    total_page: totalPage,
                                     item_count: itemdata.length,
+                                    
                                     result: itemdata
     
                                             });
@@ -600,6 +629,7 @@ module.exports={
                                 res.status(200).send({
                                     success: 1,
                                     page_number: req.query.page,
+                                    total_page: 0,
                                     item_count: 0,
                                     result: []
     
@@ -620,6 +650,8 @@ module.exports={
             page=0;
         }
         console.log('categoryMovies page='+page);
+        console.log("(page)"+page);
+        var totalPage=0;
         if(body.categoryID==undefined){
             res.status(404).send({
                 success: 0,
@@ -629,6 +661,18 @@ module.exports={
                         return ;
                         
         }
+        await countMovieByCategory(body,async(err,results)=>{
+            if(err){
+                console.log(err);
+                
+                return ;
+            }
+            console.log(results[0].count);
+            totalPage=Math.ceil((results[0].count/10));
+        });
+
+        console.log("(totalPage)"+totalPage);
+        
         await getMovieByCategory(page,body,async(err,results)=>{
             if(err){
                         console.log(err);
@@ -642,6 +686,7 @@ module.exports={
                                 res.status(200).send({
                                     success: 1,
                                     page_number: req.query.page,
+                                    total_page: totalPage,
                                     item_count: results.length,
                                     result: itemdata
     
@@ -650,6 +695,7 @@ module.exports={
                                 res.status(200).send({
                                     success: 1,
                                     page_number: req.query.page,
+                                    total_page: 0,
                                     item_count: 0,
                                     result: []
     
@@ -670,6 +716,7 @@ module.exports={
             page=0;
         }
         console.log("(page)"+page);
+        var totalPage=0;
         if(body.languageID==undefined){
             res.status(404).send({
                 success: 0,
@@ -679,6 +726,18 @@ module.exports={
                         return ;
                         
         }
+        await countMovieByLanguage(body,async(err,results)=>{
+            if(err){
+                console.log(err);
+                
+                return ;
+            }
+            console.log(results[0].count);
+            totalPage=Math.ceil((results[0].count/10));
+        });
+
+        console.log("(totalPage)"+totalPage);
+        
         await getMovieByLanguage(page,body,async(err,results)=>{
             if(err){
                         console.log(err);
@@ -691,6 +750,7 @@ module.exports={
                                 res.status(200).send({
                                     success: 1,
                                     page_number: req.query.page,
+                                    total_page: totalPage,
                                     item_count: itemdata.length,
                                     result: itemdata
     
@@ -699,6 +759,7 @@ module.exports={
                                 res.status(200).send({
                                     success: 1,
                                     page_number: req.query.page,
+                                    total_page: 0,
                                     item_count: 0,
                                     result: []
     

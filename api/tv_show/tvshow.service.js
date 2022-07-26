@@ -144,26 +144,42 @@ module.exports={
         }
        
     },
-    async getFavoriteTvshow(page,callBack){
+    async countFavoriteTvshow(uid,callBack){
+        return pool.query("SELECT DISTINCT COUNT(*) AS count FROM (((tbtvshow INNER JOIN tbtvshowdetail ON tbtvshowdetail.tvshowID=tbtvshow.tvshowID) INNER JOIN tbtvshowwishlist ON tbtvshowwishlist.tvshowID=tbtvshow.tvshowID) INNER JOIN tbuser ON tbuser.userID=tbtvshowwishlist.userID) WHERE tbuser.userID=? ORDER BY tbtvshowwishlist.wishlistID",[uid],(error,result)=>{
+                if(error){
+                   return callBack(error);
+                }
+                return callBack(null,result);
+            });
+    },
+    async getFavoriteTvshow(uid,page,callBack){
         if(page!=0){
             const limit = 10;
             var pages = page;
             var offset = (pages - 1) * limit
             console.log("pages========"+pages)
-            return pool.query("SELECT tbtvshow.tvshowID,tbtvshowdetail.tvshowDetailsID,tbtvshow.tvshowTitle,tbtvshowdetail.quality,tbtvshowdetail.rate,tbtvshowdetail.imageUrl,tbtvshowdetail.thumbnailUrl,tbtvshowdetail.releaseDate,tbtvshowdetail.overview FROM (((tbtvshow INNER JOIN tbtvshowdetail ON tbtvshowdetail.tvshowID=tbtvshow.tvshowID) INNER JOIN tbtvshowwishlist ON tbtvshowwishlist.tvshowID=tbtvshow.tvshowID) INNER JOIN tbuser ON tbuser.userID=tbtvshowwishlist.userID) WHERE tbuser.userID=? ORDER BY tbtvshowwishlist.wishlistID limit ? OFFSET ?;",[limit,offset],(error,result)=>{
+            return pool.query("SELECT tbtvshow.tvshowID,tbtvshowdetail.tvshowDetailsID,tbtvshow.tvshowTitle,tbtvshowdetail.quality,tbtvshowdetail.rate,tbtvshowdetail.imageUrl,tbtvshowdetail.thumbnailUrl,tbtvshowdetail.releaseDate,tbtvshowdetail.overview FROM (((tbtvshow INNER JOIN tbtvshowdetail ON tbtvshowdetail.tvshowID=tbtvshow.tvshowID) INNER JOIN tbtvshowwishlist ON tbtvshowwishlist.tvshowID=tbtvshow.tvshowID) INNER JOIN tbuser ON tbuser.userID=tbtvshowwishlist.userID) WHERE tbuser.userID=? ORDER BY tbtvshowwishlist.wishlistID limit ? OFFSET ?;",[uid,limit,offset],(error,result)=>{
                 if(error){
                    return callBack(error);
                 }
                 return callBack(null,result);
             });
         }else{
-            return pool.query("SELECT tbtvshow.tvshowID,tbtvshowdetail.tvshowDetailsID,tbtvshow.tvshowTitle,tbtvshowdetail.quality,tbtvshowdetail.rate,tbtvshowdetail.imageUrl,tbtvshowdetail.thumbnailUrl,tbtvshowdetail.releaseDate,tbtvshowdetail.overview FROM (((tbtvshow INNER JOIN tbtvshowdetail ON tbtvshowdetail.tvshowID=tbtvshow.tvshowID) INNER JOIN tbtvshowwishlist ON tbtvshowwishlist.tvshowID=tbtvshow.tvshowID) INNER JOIN tbuser ON tbuser.userID=tbtvshowwishlist.userID) WHERE tbuser.userID=? ORDER BY tbtvshowwishlist.wishlistID limit ? OFFSET ?;",(error,result)=>{
+            return pool.query("SELECT tbtvshow.tvshowID,tbtvshowdetail.tvshowDetailsID,tbtvshow.tvshowTitle,tbtvshowdetail.quality,tbtvshowdetail.rate,tbtvshowdetail.imageUrl,tbtvshowdetail.thumbnailUrl,tbtvshowdetail.releaseDate,tbtvshowdetail.overview FROM (((tbtvshow INNER JOIN tbtvshowdetail ON tbtvshowdetail.tvshowID=tbtvshow.tvshowID) INNER JOIN tbtvshowwishlist ON tbtvshowwishlist.tvshowID=tbtvshow.tvshowID) INNER JOIN tbuser ON tbuser.userID=tbtvshowwishlist.userID) WHERE tbuser.userID=? ORDER BY tbtvshowwishlist.wishlistID",[uid],(error,result)=>{
                 if(error){
                    return callBack(error);
                 }
                 return callBack(null,result);
             });
         }  
+    },
+    async countAlltvshow(callBack){
+        return pool.query("SELECT COUNT(*) AS count FROM (tbtvshow INNER JOIN tbtvshowdetail ON tbtvshow.tvshowID = tbtvshowdetail.tvshowID) ORDER BY tbtvshow.tvshowID;",(error,result)=>{
+                if(error){
+                   return callBack(error);
+                }
+                return callBack(null,result);
+            });
     },
     async getAlltvshow(page,callBack){
         if(page!=0){
@@ -171,14 +187,14 @@ module.exports={
             var pages = page;
             var offset = (pages - 1) * limit
             console.log("pages========"+pages)
-            return pool.query("SELECT tbtvshow.tvshowID,tbtvshowdetail.tvshowDetailsID,tbtvshow.tvshowTitle,tbtvshowdetail.quality,tbtvshowdetail.rate,tbtvshowdetail.imageUrl,tbtvshowdetail.thumbnailUrl,tbtvshowdetail.releaseDate,tbtvshowdetail.overview FROM (tbtvshow INNER JOIN tbtvshowdetail ON tbtvshow.tvshowID = tbtvshowdetail.tvshowID) ORDER BY tvshowID limit ? OFFSET ?;",[limit,offset],(error,result)=>{
+            return pool.query("SELECT tbtvshow.tvshowID,tbtvshowdetail.tvshowDetailsID,tbtvshow.tvshowTitle,tbtvshowdetail.quality,tbtvshowdetail.rate,tbtvshowdetail.imageUrl,tbtvshowdetail.thumbnailUrl,tbtvshowdetail.releaseDate,tbtvshowdetail.overview FROM (tbtvshow INNER JOIN tbtvshowdetail ON tbtvshow.tvshowID = tbtvshowdetail.tvshowID) ORDER BY tbtvshow.tvshowID limit ? OFFSET ?;",[limit,offset],(error,result)=>{
                 if(error){
                    return callBack(error);
                 }
                 return callBack(null,result);
             });
         }else{
-            return pool.query("SELECT tbtvshow.tvshowID,tbtvshowdetail.tvshowDetailsID,tbtvshow.tvshowTitle,tbtvshowdetail.quality,tbtvshowdetail.rate,tbtvshowdetail.imageUrl,tbtvshowdetail.thumbnailUrl,tbtvshowdetail.releaseDate,tbtvshowdetail.overview FROM (tbtvshow INNER JOIN tbtvshowdetail ON tbtvshow.tvshowID = tbtvshowdetail.tvshowID) ORDER BY tvshowID;",(error,result)=>{
+            return pool.query("SELECT tbtvshow.tvshowID,tbtvshowdetail.tvshowDetailsID,tbtvshow.tvshowTitle,tbtvshowdetail.quality,tbtvshowdetail.rate,tbtvshowdetail.imageUrl,tbtvshowdetail.thumbnailUrl,tbtvshowdetail.releaseDate,tbtvshowdetail.overview FROM (tbtvshow INNER JOIN tbtvshowdetail ON tbtvshow.tvshowID = tbtvshowdetail.tvshowID) ORDER BY tbtvshow.tvshowID;",(error,result)=>{
                 if(error){
                    return callBack(error);
                 }
@@ -186,20 +202,28 @@ module.exports={
             });
         }  
     },
+    async countTrendingtvshow(callBack){
+        return pool.query("SELECT COUNT(*) AS count FROM (tbtvshow INNER JOIN tbtvshowdetail ON tbtvshow.tvshowID = tbtvshowdetail.tvshowID) WHERE tbtvshow.isTrending = 1 ORDER BY tbtvshow.tvshowID;",(error,result)=>{
+                if(error){
+                   return callBack(error);
+                }
+                return callBack(null,result);
+            });
+    },
     async getTrendingtvshow(page,callBack){
         if(page!=0){
             const limit = 10;
             var pages = page;
             var offset = (pages - 1) * limit
             console.log("pages========"+pages)
-            return pool.query("SELECT tbtvshow.tvshowID,tbtvshowdetail.tvshowDetailsID,tbtvshow.tvshowTitle,tbtvshowdetail.quality,tbtvshowdetail.rate,tbtvshowdetail.imageUrl,tbtvshowdetail.thumbnailUrl,tbtvshowdetail.releaseDate,tbtvshowdetail.overview FROM (tbtvshow INNER JOIN tbtvshowdetail ON tbtvshow.tvshowID = tbtvshowdetail.tvshowID) WHERE tbtvshow.isTrending = 1 ORDER BY tvshowID limit ? OFFSET ?;",[limit,offset],(error,result)=>{
+            return pool.query("SELECT tbtvshow.tvshowID,tbtvshowdetail.tvshowDetailsID,tbtvshow.tvshowTitle,tbtvshowdetail.quality,tbtvshowdetail.rate,tbtvshowdetail.imageUrl,tbtvshowdetail.thumbnailUrl,tbtvshowdetail.releaseDate,tbtvshowdetail.overview FROM (tbtvshow INNER JOIN tbtvshowdetail ON tbtvshow.tvshowID = tbtvshowdetail.tvshowID) WHERE tbtvshow.isTrending = 1 ORDER BY tbtvshow.tvshowID limit ? OFFSET ?;",[limit,offset],(error,result)=>{
                 if(error){
                    return callBack(error);
                 }
                 return callBack(null,result);
             });
         }else{
-            return pool.query("SELECT tbtvshow.tvshowID,tbtvshowdetail.tvshowDetailsID,tbtvshow.tvshowTitle,tbtvshowdetail.quality,tbtvshowdetail.rate,tbtvshowdetail.imageUrl,tbtvshowdetail.thumbnailUrl,tbtvshowdetail.releaseDate,tbtvshowdetail.overview FROM (tbtvshow INNER JOIN tbtvshowdetail ON tbtvshow.tvshowID = tbtvshowdetail.tvshowID) WHERE tbtvshow.isTrending = 1 ORDER BY tvshowID;",(error,result)=>{
+            return pool.query("SELECT tbtvshow.tvshowID,tbtvshowdetail.tvshowDetailsID,tbtvshow.tvshowTitle,tbtvshowdetail.quality,tbtvshowdetail.rate,tbtvshowdetail.imageUrl,tbtvshowdetail.thumbnailUrl,tbtvshowdetail.releaseDate,tbtvshowdetail.overview FROM (tbtvshow INNER JOIN tbtvshowdetail ON tbtvshow.tvshowID = tbtvshowdetail.tvshowID) WHERE tbtvshow.isTrending = 1 ORDER BY tbtvshow.tvshowID;",(error,result)=>{
                 if(error){
                    return callBack(error);
                 }
