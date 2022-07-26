@@ -23,6 +23,11 @@ router.get("/slide-show",fetchSlideShow);
 router.post("/forgot-otp",sendOtpForgotPass);
 router.post("/forgot-pass",createNewPassword);
 // router.post("/popular-movies",checkToken,popularMovies);
+router.post("/abc",checkAdminToken, async(req, res, next) => {
+    
+    await languageMovies(req.decoded['userId'],req, res);
+    
+});
 router.post("/language-movies",checkToken, async(req, res, next) => {
     
     await languageMovies(req.decoded['userId'],req, res);
